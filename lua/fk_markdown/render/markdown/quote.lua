@@ -194,11 +194,35 @@ function Render:boxy_run()
 
         -- Trailing spaces ensure virt_lines bg extends to window edge (like hl_eol)
         local trailing   = string.rep(' ', 100)
-        local top_str    = '╭' .. string.rep('─', inner) .. '╮' .. trailing
+
+        -- Build top border with embedded callout title (like codeblock language tab)
+        local callout_title = nil
+        if callout and callout_cfg then
+            local config = callout_cfg
+            local title  = Render.title(callout.node, config)
+            callout_title = title or config.rendered
+        end
+
+        local top_vt
+        if callout_title then
+            -- ╭─ ⚠ Warning ───────────────╮
+            local title_str  = ' ' .. callout_title .. ' '
+            local title_width = vim.fn.strdisplaywidth(title_str)
+            local dashes_after = math.max(inner - 1 - title_width, 0)
+            top_vt = {
+                { '╭─', hl_brd_key },
+                { title_str, accent_hl },
+                { string.rep('─', dashes_after) .. '╮' .. trailing, hl_brd_key },
+            }
+        else
+            local top_str = '╭' .. string.rep('─', inner) .. '╮' .. trailing
+            top_vt = { { top_str, hl_brd_key } }
+        end
+
         local bot_str    = '╰' .. string.rep('─', inner) .. '╯' .. trailing
 
         self.marks:add(self.config, 'quote', start_row, start_col, {
-            virt_lines       = { { { top_str, hl_brd_key } } },
+            virt_lines       = { top_vt },
             virt_lines_above = true,
             priority         = 100,
         })
@@ -228,15 +252,15 @@ function Render:boxy_run()
     for row = start_row, end_row do
         local bar_vt
         if accent_mode == 'thick' then
-            -- Two-char gradient: full block → half block → space
-            bar_vt = { { '█', hl_bar_key }, { '▌', hl_bar_key } }
+            -- Thick gradient: full block → half block
+            bar_vt = { { '█▌', hl_bar_key } }
         elseif accent_mode == 'corner' then
             -- No visible bar on content rows — just replace '> ' with spaces
             -- The box corners (╭/╰) from virt_lines are the only accent
             bar_vt = { { '  ', hl_bg_key } }
         else
-            -- 'line' (default): single thick bar character
-            bar_vt = { { '▋ ', hl_bar_key } }
+            -- 'line' (default): block char doubles as left border
+            bar_vt = { { '▌ ', hl_bar_key } }
         end
 
         self.marks:add(self.config, 'quote', row, start_col, {
@@ -248,15 +272,16 @@ function Render:boxy_run()
         })
     end
 
-    -- ── 4. Callout title overlay ──────────────────────────────────
+    -- ── 4. Callout title overlay (conceal the raw [!NOTE] text) ───
     if callout then
         local node   = callout.node
         local config = callout_cfg
         local title  = Render.title(node, config)
+        -- Conceal the raw callout marker on the content line since title is now in the border
         self.marks:over(self.config, 'callout', node, {
-            virt_text     = { { title or config.rendered, accent_hl } },
+            virt_text     = { { '', '' } },
             virt_text_pos = 'overlay',
-            conceal       = title and '' or nil,
+            conceal       = '',
             priority      = 150,
         })
     end

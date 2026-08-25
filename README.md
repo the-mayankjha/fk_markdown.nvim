@@ -1,9 +1,9 @@
 # fk_markdown.nvim
 
-A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, links and more.
+A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, li[...]
 
 <div align="center">
-  <img alt="fk_markdown.nvim banner" width="600" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
+  <img alt="fk_markdown.nvim banner" width="600" src="banner.png" />
 </div>
 
 ## ✨ Features

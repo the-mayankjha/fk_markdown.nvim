@@ -1,5 +1,13 @@
 <div align="center">
   <img alt="fk_markdown.nvim banner" width="600" src="banner.png" />
+  <p>
+    <a href="https://github.com/the-mayankjha/fk_markdown.nvim"><img alt="Release" src="https://img.shields.io/github/v/release/the-mayankjha/fk_markdown.nvim"/></a>
+    <a href="https://github.com/the-mayankjha/fk_markdown.nvim/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/the-mayankjha/fk_markdown.nvim?style=social"/></a>
+    <a href="https://github.com/the-mayankjha/fk_markdown.nvim/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/the-mayankjha/fk_markdown.nvim"/></a>
+    <img alt="Neovim 0.9+" src="https://img.shields.io/badge/Neovim-0.9%2B-43f0ad?logo=neovim&logoColor=white"/>
+    <img alt="Lua" src="https://img.shields.io/badge/Lua-Lua-2b7489?logo=lua&logoColor=white"/>
+    <img alt="iOS" src="https://img.shields.io/badge/iOS-supported-000000?logo=apple&logoColor=white"/>
+  </p>
 </div>
 A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, li[...]
 

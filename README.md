@@ -1,112 +1,490 @@
 # fk_markdown.nvim
 
-A lightweight Neovim plugin for rendering and customizing Markdown elements inside Neovim with flexible Lua configuration.
+A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, links, and more—all configured with simple Lua tables.
 
-This update adds detailed documentation for how different Markdown elements are rendered inside the plugin and provides configuration pages per element (headers, codeblocks, callouts, tables) with placeholder screenshots you can replace later.
+<div align="center">
+  <img alt="fk_markdown.nvim banner" width="600" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
+</div>
 
-## Installation
+## ✨ Features
 
-Use your favorite plugin manager. Example (packer.nvim):
+- 🎨 **Fully customizable** — Configure every element with highlight groups, sizes, and styles
+- ⚡ **Lightweight** — Minimal overhead with efficient rendering
+- 🔧 **Per-element configuration** — Separate config docs for each Markdown element
+- 📝 **Wide support** — Headers, emphasis, links, tables, code blocks, quotes, callouts, lists, and images
+- 🎯 **Treesitter integration** — Enhanced syntax highlighting for code blocks
+
+---
+
+## 📦 Installation
+
+### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
 use {
   'the-mayankjha/fk_markdown.nvim',
   config = function()
     require('fk_markdown').setup({
-      -- plugin defaults (see doc/configuration.md)
+      -- configuration here (see examples below)
     })
   end
 }
 ```
 
-## Render examples
+### Using [vim-plug](https://github.com/junegunn/vim-plug)
 
-Below are the Markdown elements supported and how they are rendered inside fk_markdown.nvim. Each example includes a link to the element-specific configuration page and a placeholder screenshot. Replace the placeholders at `doc/images/` with your own screenshots later.
+```vim
+Plug 'the-mayankjha/fk_markdown.nvim'
+```
 
-- Headers
-  <div align-"center">
-  <img width="1178" height="792" alt="image" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
-  <em>Headers with icon rendering</em>
-  </div>
-  - Description: Renders Markdown headers (#, ##, ###) using configurable styles and sizes.
-  - Config: doc/configuration/header.md
- 
+Then in your `init.lua`:
 
-- Bold / Italic / Underline
- <img width="1079" height="289" alt="image" src="https://github.com/user-attachments/assets/561dd3ee-287e-40cd-8bfd-5eddfe80aa9f" />
+```lua
+require('fk_markdown').setup({
+  -- configuration here
+})
+```
 
-  - Description: Emphasizes text using bold, italic and underline styles. These styles are configurable via highlight groups and font features.
-  - Config: doc/configuration.md#emphasis (general emphasis settings)
+### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
+```lua
+{
+  'the-mayankjha/fk_markdown.nvim',
+  config = function()
+    require('fk_markdown').setup({
+      -- configuration here
+    })
+  end
+}
+```
 
-- Links
-  <img width="1130" height="128" alt="image" src="https://github.com/user-attachments/assets/45c48f26-09a7-4903-b20d-732fcccf5918" />
-  - Description: Renders links with configurable text decorations and click/mapping support.
-  - Config: doc/configuration.md#links
- 
+### Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim)
 
-- Table
-  <img width="1090" height="294" alt="image" src="https://github.com/user-attachments/assets/3706dc15-80e3-4c3b-aece-4042ed55928e" />
+```bash
+:Rocks install fk_markdown.nvim
+```
 
-  - Description: Renders Markdown tables with borders, alternating row highlights, and alignment options.
-  - Config: doc/configuration/table.md
+---
 
+## ⚙️ Quick Setup
 
-- Codeblock
-  <img width="1113" height="705" alt="image" src="https://github.com/user-attachments/assets/fcd53006-4cbc-46d1-bdc5-f5cc7da41c55" />
-  
-  - Description: Renders fenced code blocks with syntax highlighting, line numbers (optional), background, and a configurable gutter.
-  - Config: doc/configuration/codeblock.md
+Minimal configuration to get started:
 
-- Quotation
-  <img width="1120" height="213" alt="image" src="https://github.com/user-attachments/assets/87c292d5-1010-4cab-83c3-2f32e710eb92" />
+```lua
+require('fk_markdown').setup({})
+```
 
-  - Description: Renders blockquotes with a vertical bar, custom highlight, and optional author label.
-  - Config: doc/configuration.md#quotation
-  
+For a more personalized setup, see the **Feature Configuration** section below.
 
-- Callouts
-  <img width="1171" height="792" alt="image" src="https://github.com/user-attachments/assets/d81b57b4-cad3-45b3-bc25-f9d1f88438e8" />
-  
-  - Description: Renders informational/warning/error/success callouts with icons, colors, and custom titles.
-  - Config: doc/configuration/callout.md
+---
 
-- Bulleted & Numbered Lists
-  <img width="1053" height="443" alt="image" src="https://github.com/user-attachments/assets/205f6f10-0ba4-4e60-9d77-4704bff78354" />
+## 🎨 Feature Configuration
 
-  - Description: Custom bullet symbols, indentation and nested list rendering.
-  - Config: doc/configuration.md#lists
+### Headers
 
+Render Markdown headers (#, ##, ###, etc.) with customizable sizes, bold styling, and highlight groups.
 
-- Links and Images
-  <img width="1131" height="223" alt="image" src="https://github.com/user-attachments/assets/d856031d-81bf-437b-b295-d78dcdaf4c30" />
-  - Description: Inline image placeholders and optional inline preview support (if an image preview plugin is enabled).
-  - Config: doc/configuration.md#images
+<div align="center">
+  <img alt="Headers with icon rendering" width="600" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
+  <p><em>Headers with custom styling and sizes</em></p>
+</div>
 
-
-## Examples of configuration
-
-See the element-specific docs for examples. Quick snippet for general setup:
+**Configuration:**
 
 ```lua
 require('fk_markdown').setup({
   header = {
     level_styles = {
-      [1] = {size = 1.6, bold = true},
-      [2] = {size = 1.3, bold = true},
-      [3] = {size = 1.1, bold = false},
+      [1] = { size = 1.6, bold = true, hl = 'Title' },
+      [2] = { size = 1.3, bold = true, hl = 'Keyword' },
+      [3] = { size = 1.1, bold = false, hl = 'Type' },
+    },
+    underline = {
+      enable = true,
+      char = '─',
+      hl = 'Comment',
     }
-  },
-  codeblock = {
-    show_line_numbers = false,
-    style = 'single',
-  },
-  callout = {
-    icons = {info = 'ℹ️', warn = '⚠️', error = '❌', success = '✅'}
   }
 })
 ```
 
-## Contributing
+**Options:**
+- `level_styles` — Table mapping header level (1-6) to style options
+  - `size` — Relative size multiplier (e.g., 1.6 for H1)
+  - `bold` — Apply bold styling
+  - `hl` — Highlight group name
+- `underline` — Underline decoration for headers
+  - `enable` — Toggle underline rendering
+  - `char` — Character to use for underline
+  - `hl` — Highlight group for underline
 
-PRs are welcome. If you update screenshots, replace the placeholder images in `doc/images/` with the real ones and keep the same file names used above.
+[Full header configuration docs →](doc/configuration/header.md)
+
+---
+
+### Code Blocks
+
+Render fenced code blocks with syntax highlighting, optional line numbers, borders, and custom gutters.
+
+<div align="center">
+  <img alt="Code blocks with syntax highlighting and borders" width="600" src="https://github.com/user-attachments/assets/fcd53006-4cbc-46d1-bdc5-f5cc7da41c55" />
+  <p><em>Code blocks with line numbers and custom styling</em></p>
+</div>
+
+**Configuration:**
+
+```lua
+require('fk_markdown').setup({
+  codeblock = {
+    show_line_numbers = true,
+    style = 'single',  -- 'single', 'double', or 'none'
+    hl = 'Normal',
+    gutter = {
+      enable = true,
+      width = 2
+    },
+  }
+})
+```
+
+**Options:**
+- `show_line_numbers` — Display line numbers (boolean)
+- `style` — Border style: `'single'`, `'double'`, or `'none'`
+- `hl` — Highlight group for code background
+- `gutter` — Left-side gutter configuration
+  - `enable` — Toggle gutter rendering
+  - `width` — Width of the gutter in columns
+
+[Full codeblock configuration docs →](doc/configuration/codeblock.md)
+
+---
+
+### Tables
+
+Render Markdown tables with configurable borders, alignment, and alternating row highlights.
+
+<div align="center">
+  <img alt="Markdown tables with borders and row highlighting" width="600" src="https://github.com/user-attachments/assets/3706dc15-80e3-4c3b-aece-4042ed55928e" />
+  <p><em>Tables with borders and alternating row colors</em></p>
+</div>
+
+**Configuration:**
+
+```lua
+require('fk_markdown').setup({
+  table = {
+    border = {
+      enable = true,
+      style = 'single'  -- 'single', 'double', or 'none'
+    },
+    align = {
+      default = 'left'  -- 'left', 'center', or 'right'
+    },
+    alternate_rows = true,
+  }
+})
+```
+
+**Options:**
+- `border` — Table border configuration
+  - `enable` — Toggle borders
+  - `style` — Border character style
+- `align` — Cell alignment defaults
+  - `default` — Default alignment for all cells
+- `alternate_rows` — Alternate row background colors (boolean)
+
+[Full table configuration docs →](doc/configuration/table.md)
+
+---
+
+### Callouts
+
+Render informational callouts with icons, custom colors, and titles (info, warn, error, success).
+
+<div align="center">
+  <img alt="Callouts with icons and colors" width="600" src="https://github.com/user-attachments/assets/d81b57b4-cad3-45b3-bc25-f9d1f88438e8" />
+  <p><em>Callouts for info, warning, error, and success messages</em></p>
+</div>
+
+**Configuration:**
+
+```lua
+require('fk_markdown').setup({
+  callout = {
+    icons = {
+      info = 'ℹ️',
+      warn = '⚠️',
+      error = '❌',
+      success = '✅'
+    },
+    highlights = {
+      info = 'Hint',
+      warn = 'WarningMsg',
+      error = 'Error',
+      success = 'DiagnosticOk'
+    },
+    border = {
+      enable = true,
+      style = 'rounded'  -- 'rounded' or 'square'
+    }
+  }
+})
+```
+
+**Options:**
+- `icons` — Emoji/symbols for each callout type
+- `highlights` — Highlight group for each callout type
+- `border` — Border styling
+  - `enable` — Toggle borders around callouts
+  - `style` — `'rounded'` or `'square'`
+
+[Full callout configuration docs →](doc/configuration/callout.md)
+
+---
+
+### Emphasis (Bold / Italic / Underline)
+
+Customize text emphasis with highlight groups and font features.
+
+<div align="center">
+  <img alt="Bold, italic, and underlined text" width="600" src="https://github.com/user-attachments/assets/561dd3ee-287e-40cd-8bfd-5eddfe80aa9f" />
+  <p><em>Text emphasis with custom highlight groups</em></p>
+</div>
+
+**Configuration:**
+
+```lua
+require('fk_markdown').setup({
+  emphasis = {
+    bold = { hl = 'Bold', enable = true },
+    italic = { hl = 'Italic', enable = true },
+    underline = { hl = 'Underline', enable = true },
+  }
+})
+```
+
+**Options:**
+- `bold`, `italic`, `underline` — Each takes:
+  - `hl` — Highlight group name
+  - `enable` — Toggle rendering
+
+---
+
+### Bulleted & Numbered Lists
+
+Customize bullet characters, indentation, and nested list rendering.
+
+<div align="center">
+  <img alt="Bulleted and numbered lists" width="600" src="https://github.com/user-attachments/assets/205f6f10-0ba4-4e60-9d77-4704bff78354" />
+  <p><em>Lists with custom bullets and indentation</em></p>
+</div>
+
+**Configuration:**
+
+```lua
+require('fk_markdown').setup({
+  lists = {
+    bullet = '•',
+    nested_offset = 2,
+    enable_tight_lists = true,
+  }
+})
+```
+
+**Options:**
+- `bullet` — Bullet character (string)
+- `nested_offset` — Indentation width for nested lists
+- `enable_tight_lists` — Compact spacing for lists (boolean)
+
+---
+
+### Links
+
+Control link styling and enable click/mapping support.
+
+<div align="center">
+  <img alt="Styled links" width="600" src="https://github.com/user-attachments/assets/45c48f26-09a7-4903-b20d-732fcccf5918" />
+  <p><em>Links with custom highlighting and decoration</em></p>
+</div>
+
+**Configuration:**
+
+```lua
+require('fk_markdown').setup({
+  links = {
+    hl = 'Underlined',
+    open_mapping = '<CR>',  -- optional: map to open links
+    show_url_on_hover = true,
+  }
+})
+```
+
+**Options:**
+- `hl` — Highlight group for links
+- `open_mapping` — Key mapping to open links (optional)
+- `show_url_on_hover` — Display URL on hover (boolean)
+
+---
+
+### Blockquotes
+
+Render blockquotes with a vertical bar, custom highlight, and optional author labels.
+
+<div align="center">
+  <img alt="Blockquotes with vertical bar" width="600" src="https://github.com/user-attachments/assets/87c292d5-1010-4cab-83c3-2f32e710eb92" />
+  <p><em>Blockquotes with custom styling</em></p>
+</div>
+
+**Configuration:**
+
+```lua
+require('fk_markdown').setup({
+  quotation = {
+    bar_char = '│',
+    highlight = 'Comment',
+    show_author = true,
+  }
+})
+```
+
+**Options:**
+- `bar_char` — Character for the left border
+- `highlight` — Highlight group for the quote
+- `show_author` — Display author attribution (boolean)
+
+---
+
+### Images
+
+Configure inline image placeholders and optional preview support.
+
+<div align="center">
+  <img alt="Image placeholders" width="600" src="https://github.com/user-attachments/assets/d856031d-81bf-437b-b295-d78dcdaf4c30" />
+  <p><em>Image placeholders with custom sizing</em></p>
+</div>
+
+**Configuration:**
+
+```lua
+require('fk_markdown').setup({
+  images = {
+    show_inline = true,
+    placeholder = '[IMAGE]',
+    max_width = 80,
+  }
+})
+```
+
+**Options:**
+- `show_inline` — Display inline images (requires preview plugin)
+- `placeholder` — Text to show for images
+- `max_width` — Maximum width for inline images
+
+---
+
+## 🚀 Complete Configuration Example
+
+```lua
+require('fk_markdown').setup({
+  header = {
+    level_styles = {
+      [1] = { size = 1.6, bold = true, hl = 'Title' },
+      [2] = { size = 1.3, bold = true, hl = 'Keyword' },
+      [3] = { size = 1.1, bold = false, hl = 'Type' },
+    },
+    underline = { enable = true, char = '─', hl = 'Comment' }
+  },
+  codeblock = {
+    show_line_numbers = false,
+    style = 'single',
+    hl = 'Normal',
+    gutter = { enable = true, width = 2 },
+  },
+  callout = {
+    icons = { info = 'ℹ️', warn = '⚠️', error = '❌', success = '✅' },
+    highlights = { info = 'Hint', warn = 'WarningMsg', error = 'Error', success = 'DiagnosticOk' },
+    border = { enable = true, style = 'rounded' }
+  },
+  table = {
+    border = { enable = true, style = 'single' },
+    align = { default = 'left' },
+    alternate_rows = true,
+  },
+  emphasis = {
+    bold = { hl = 'Bold', enable = true },
+    italic = { hl = 'Italic', enable = true },
+    underline = { hl = 'Underline', enable = false },
+  },
+  lists = {
+    bullet = '•',
+    nested_offset = 2,
+    enable_tight_lists = true,
+  },
+  links = {
+    hl = 'Underlined',
+    show_url_on_hover = true,
+  },
+  quotation = {
+    bar_char = '│',
+    highlight = 'Comment',
+    show_author = false,
+  },
+  images = {
+    show_inline = false,
+    placeholder = '[IMAGE]',
+    max_width = 80,
+  }
+})
+```
+
+---
+
+## 📖 Documentation
+
+For detailed configuration of individual elements, see:
+
+- **[Header Configuration](doc/configuration/header.md)** — Size, bold, highlight groups, and underlines
+- **[Table Configuration](doc/configuration/table.md)** — Borders, alignment, and row alternation
+- **[Codeblock Configuration](doc/configuration/codeblock.md)** — Line numbers, borders, and gutters
+- **[Callout Configuration](doc/configuration/callout.md)** — Icons, highlights, and borders
+- **[General Configuration](doc/configuration.md)** — Emphasis, lists, links, images, and quotations
+
+Additional resources:
+- **[Custom Handlers](doc/custom-handlers.md)** — Extend rendering with custom Lua functions
+- **[Limitations](doc/limitations.md)** — Known limitations and workarounds
+- **[Troubleshooting](doc/troubleshooting.md)** — Common issues and solutions
+
+---
+
+## 🔧 Requirements
+
+- Neovim 0.9+
+- (Optional) Treesitter for enhanced syntax highlighting in code blocks
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+1. **Adding features** — Create an issue first to discuss the feature
+2. **Updating screenshots** — Replace placeholder images in `doc/images/` with real ones
+3. **Documentation** — Keep docs updated with configuration changes
+4. **Testing** — Test your changes in different terminal emulators and color schemes
+
+To update a screenshot:
+1. Take a screenshot of the feature in Neovim
+2. Save it to `doc/images/` with the appropriate name (e.g., `headers.png`, `codeblock.png`)
+3. Update the filename reference in the README and documentation
+
+---
+
+## 📄 License
+
+Licensed under the MIT License. See LICENSE for details.
+
+---
+
+## 🙏 Acknowledgments
+
+Built with ❤️ for the Neovim community. Thanks to all contributors and users!

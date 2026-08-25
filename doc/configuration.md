@@ -1,100 +1,102 @@
-# fk_markdown.nvim — Configuration overview
+# ⚙️ Configuration Overview
 
-This page covers general configuration options for fk_markdown.nvim: emphasis, lists, links, images and quotations. Specific elements (headers, tables, codeblocks, callouts) have their own pages linked from this overview.
+`fk_markdown.nvim` exposes a clean, modular configuration table. Some options are intercepted by the plugin's custom wrappers to simplify advanced configurations (like boxy codeblocks and custom heading backgrounds), while all other standard `render-markdown.nvim` configurations are natively supported and merged.
 
-## Emphasis (bold / italic / underline)
+Specific elements have detailed documentation:
+- 󰲡 [Header Configuration](file:///Users/mayankjha/fk_markdown.nvim/doc/configuration/header.md)
+-  [Codeblock Configuration](file:///Users/mayankjha/fk_markdown.nvim/doc/configuration/codeblock.md)
+-  [Table Configuration](file:///Users/mayankjha/fk_markdown.nvim/doc/configuration/table.md)
+- 󰋽 [Callout & Quote Configuration](file:///Users/mayankjha/fk_markdown.nvim/doc/configuration/callout.md)
 
-You can control how emphasis is applied via highlight groups and font options.
+---
 
-Example:
+## 🎨 Core Engine Standard Options
 
+Any options outside `heading`, `code`, and `quote` wrappers are forwarded directly to the core render engine. Below are key elements you can configure:
+
+### Bullets (Lists)
+Configure bullet characters and indentation spacing under the `bullet` block:
 ```lua
 require('fk_markdown').setup({
-  emphasis = {
-    bold = {hl = 'Bold', enable = true},
-    italic = {hl = 'Italic', enable = true},
-    underline = {hl = 'Underline', enable = false},
-  }
+    bullet = {
+        enabled = true,
+        icons = { '●', '○', '◆', '◇' }, -- Cycles bullet characters based on list nesting depth
+        left_pad = 0,
+        right_pad = 1,
+        highlight = 'RenderMarkdownBullet',
+    }
 })
 ```
+- [...image showing list bullet points]
 
-See screenshot: ![Emphasis render](doc/images/emphasis.png)
-
-## Lists (bulleted & numbered)
-
-Options allow customizing bullet characters, indentation, and nested-list visuals.
-
-Example:
-
+### Checkboxes
+Configure task checkboxes (e.g. `[ ]`, `[x]`, `[-]`) under the `checkbox` block:
 ```lua
 require('fk_markdown').setup({
-  lists = {
-    bullet = '•',
-    nested_offset = 2,
-    enable_tight_lists = true,
-  }
+    checkbox = {
+        enabled = true,
+        unchecked = { icon = '󰄱 ', highlight = 'RenderMarkdownUnchecked' },
+        checked = { icon = '󰱒 ', highlight = 'RenderMarkdownChecked' },
+        custom = {
+            todo = { raw = '[-]', rendered = '󰥔 ', highlight = 'RenderMarkdownTodo' },
+        }
+    }
 })
 ```
+- [...image showing task list checkboxes]
 
-See screenshot: ![Lists render](doc/images/lists.png)
-
-## Links
-
-Control link styling and optional key mappings for opening links.
-
-Example:
-
+### Links & Images
+Configure how inline hyperlinks, images, and wiki links are decorated under the `link` block:
 ```lua
 require('fk_markdown').setup({
-  links = {
-    hl = 'Underlined',
-    open_mapping = '<CR>',
-    show_url_on_hover = false,
-  }
+    link = {
+        enabled = true,
+        image = '󰥶 ',
+        email = '󰀓 ',
+        hyperlink = '󰌹 ',
+        wiki = { enabled = true, icon = '󱗖 ' },
+        highlight = 'RenderMarkdownLink',
+        highlight_title = 'RenderMarkdownLinkTitle',
+    }
 })
 ```
+- [...image showing styled inline link and image icon placeholders]
 
-See screenshot: ![Links render](doc/images/links.png)
-
-## Images
-
-Image display is optional and may depend on external preview plugins. You can configure placeholders and sizing.
-
-Example:
-
+### Dashes (Thematic Breaks)
+Customize thematic breaks (e.g., `---`) under the `dash` block:
 ```lua
 require('fk_markdown').setup({
-  images = {
-    show_inline = false,
-    placeholder = 'doc/images/image-placeholder.png',
-    max_width = 80,
-  }
+    dash = {
+        enabled = true,
+        icon = '─',
+        highlight = 'RenderMarkdownDash',
+    }
 })
 ```
+- [...image showing styled horizontal dash break]
 
-See screenshot: ![Images render](doc/images/images.png)
+---
 
-## Quotation
+## ⚙️ Plugin Settings
 
-Quotation (blockquotes) options.
+In addition to visual rendering, the following root settings control the plugin's runtime execution:
 
-```lua
-require('fk_markdown').setup({
-  quotation = {
-    bar_char = '|',
-    highlight = 'Comment',
-    show_author = false,
-  }
-})
-```
+### `render_modes`
+- **Type**: `string[] | boolean`
+- **Default**: `{ 'n', 'c', 't' }`
+- Vim modes that will render elements. Remaining modes will display native markdown.
 
-See screenshot: ![Quotation render](doc/images/quotation.png)
+### `max_file_size`
+- **Type**: `number` (in MB)
+- **Default**: `10.0`
+- Maximum file size the plugin will attempt to render to prevent latency on large files.
 
-## Where to find element-specific options
+### `debounce`
+- **Type**: `integer` (in ms)
+- **Default**: `100`
+- Milliseconds to wait before refreshing the visual renders after a buffer change.
 
-- Headers: doc/configuration/header.md
-- Tables: doc/configuration/table.md
-- Codeblocks: doc/configuration/codeblock.md
-- Callouts: doc/configuration/callout.md
-
-Replace the image placeholders in `doc/images/` with your screenshots when ready.
+### `file_types`
+- **Type**: `string[]`
+- **Default**: `{ 'markdown' }`
+- Filetypes this plugin will attach to.

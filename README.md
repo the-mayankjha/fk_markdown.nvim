@@ -7,7 +7,7 @@
     <img alt="Lua" src="https://img.shields.io/badge/Lua-Lua-2b7489?logo=lua&logoColor=white"/>
   </p>
 </div>
-A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, li[...]
+A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, lists, and more.
 
 
 
@@ -18,6 +18,10 @@ A lightweight Neovim plugin for rendering and customizing Markdown elements with
 - 🔧 **Per-element configuration** — Separate config docs for each Markdown element
 - 📝 **Wide support** — Headers, emphasis, links, tables, code blocks, quotes, callouts, lists, and images
 - 🎯 **Treesitter integration** — Enhanced syntax highlighting for code blocks
+
+<div align="center" style="margin: 30px 0;">
+  <img alt="fk_markdown.nvim features showcase" width="80%" src="feature.png" />
+</div>
 
 ---
 

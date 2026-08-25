@@ -1,6 +1,6 @@
 # fk_markdown.nvim
 
-A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, links, and more—all configured with simple Lua tables.
+A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, links and more.
 
 <div align="center">
   <img alt="fk_markdown.nvim banner" width="600" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
@@ -84,10 +84,15 @@ For a more personalized setup, see the **Feature Configuration** section below.
 
 Render Markdown headers (#, ##, ###, etc.) with customizable sizes, bold styling, and highlight groups.
 
-<div align="center">
-  <img alt="Headers with icon rendering" width="600" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
-  <p><em>Headers with custom styling and sizes</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Headers with icon rendering" width="100%" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Headers with custom styling and sizes</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -120,16 +125,25 @@ require('fk_markdown').setup({
 
 [Full header configuration docs →](doc/configuration/header.md)
 
+    </div>
+  </div>
+</div>
+
 ---
 
 ### Code Blocks
 
 Render fenced code blocks with syntax highlighting, optional line numbers, borders, and custom gutters.
 
-<div align="center">
-  <img alt="Code blocks with syntax highlighting and borders" width="600" src="https://github.com/user-attachments/assets/fcd53006-4cbc-46d1-bdc5-f5cc7da41c55" />
-  <p><em>Code blocks with line numbers and custom styling</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Code blocks with syntax highlighting and borders" width="100%" src="https://github.com/user-attachments/assets/fcd53006-4cbc-46d1-bdc5-f5cc7da41c55" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Code blocks with line numbers and custom styling</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -157,16 +171,25 @@ require('fk_markdown').setup({
 
 [Full codeblock configuration docs →](doc/configuration/codeblock.md)
 
+    </div>
+  </div>
+</div>
+
 ---
 
 ### Tables
 
 Render Markdown tables with configurable borders, alignment, and alternating row highlights.
 
-<div align="center">
-  <img alt="Markdown tables with borders and row highlighting" width="600" src="https://github.com/user-attachments/assets/3706dc15-80e3-4c3b-aece-4042ed55928e" />
-  <p><em>Tables with borders and alternating row colors</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Markdown tables with borders and row highlighting" width="100%" src="https://github.com/user-attachments/assets/3706dc15-80e3-4c3b-aece-4042ed55928e" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Tables with borders and alternating row colors</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -195,16 +218,25 @@ require('fk_markdown').setup({
 
 [Full table configuration docs →](doc/configuration/table.md)
 
+    </div>
+  </div>
+</div>
+
 ---
 
 ### Callouts
 
 Render informational callouts with icons, custom colors, and titles (info, warn, error, success).
 
-<div align="center">
-  <img alt="Callouts with icons and colors" width="600" src="https://github.com/user-attachments/assets/d81b57b4-cad3-45b3-bc25-f9d1f88438e8" />
-  <p><em>Callouts for info, warning, error, and success messages</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Callouts with icons and colors" width="100%" src="https://github.com/user-attachments/assets/d81b57b4-cad3-45b3-bc25-f9d1f88438e8" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Callouts for info, warning, error, and success messages</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -240,16 +272,25 @@ require('fk_markdown').setup({
 
 [Full callout configuration docs →](doc/configuration/callout.md)
 
+    </div>
+  </div>
+</div>
+
 ---
 
 ### Emphasis (Bold / Italic / Underline)
 
 Customize text emphasis with highlight groups and font features.
 
-<div align="center">
-  <img alt="Bold, italic, and underlined text" width="600" src="https://github.com/user-attachments/assets/561dd3ee-287e-40cd-8bfd-5eddfe80aa9f" />
-  <p><em>Text emphasis with custom highlight groups</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Bold, italic, and underlined text" width="100%" src="https://github.com/user-attachments/assets/561dd3ee-287e-40cd-8bfd-5eddfe80aa9f" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Text emphasis with custom highlight groups</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -268,16 +309,25 @@ require('fk_markdown').setup({
   - `hl` — Highlight group name
   - `enable` — Toggle rendering
 
+    </div>
+  </div>
+</div>
+
 ---
 
 ### Bulleted & Numbered Lists
 
 Customize bullet characters, indentation, and nested list rendering.
 
-<div align="center">
-  <img alt="Bulleted and numbered lists" width="600" src="https://github.com/user-attachments/assets/205f6f10-0ba4-4e60-9d77-4704bff78354" />
-  <p><em>Lists with custom bullets and indentation</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Bulleted and numbered lists" width="100%" src="https://github.com/user-attachments/assets/205f6f10-0ba4-4e60-9d77-4704bff78354" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Lists with custom bullets and indentation</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -296,16 +346,25 @@ require('fk_markdown').setup({
 - `nested_offset` — Indentation width for nested lists
 - `enable_tight_lists` — Compact spacing for lists (boolean)
 
+    </div>
+  </div>
+</div>
+
 ---
 
 ### Links
 
 Control link styling and enable click/mapping support.
 
-<div align="center">
-  <img alt="Styled links" width="600" src="https://github.com/user-attachments/assets/45c48f26-09a7-4903-b20d-732fcccf5918" />
-  <p><em>Links with custom highlighting and decoration</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Styled links" width="100%" src="https://github.com/user-attachments/assets/45c48f26-09a7-4903-b20d-732fcccf5918" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Links with custom highlighting and decoration</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -324,16 +383,25 @@ require('fk_markdown').setup({
 - `open_mapping` — Key mapping to open links (optional)
 - `show_url_on_hover` — Display URL on hover (boolean)
 
+    </div>
+  </div>
+</div>
+
 ---
 
 ### Blockquotes
 
 Render blockquotes with a vertical bar, custom highlight, and optional author labels.
 
-<div align="center">
-  <img alt="Blockquotes with vertical bar" width="600" src="https://github.com/user-attachments/assets/87c292d5-1010-4cab-83c3-2f32e710eb92" />
-  <p><em>Blockquotes with custom styling</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Blockquotes with vertical bar" width="100%" src="https://github.com/user-attachments/assets/87c292d5-1010-4cab-83c3-2f32e710eb92" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Blockquotes with custom styling</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -352,16 +420,25 @@ require('fk_markdown').setup({
 - `highlight` — Highlight group for the quote
 - `show_author` — Display author attribution (boolean)
 
+    </div>
+  </div>
+</div>
+
 ---
 
 ### Images
 
 Configure inline image placeholders and optional preview support.
 
-<div align="center">
-  <img alt="Image placeholders" width="600" src="https://github.com/user-attachments/assets/d856031d-81bf-437b-b295-d78dcdaf4c30" />
-  <p><em>Image placeholders with custom sizing</em></p>
-</div>
+<div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+  <div style="flex: 0 0 45%;">
+    <img alt="Image placeholders" width="100%" src="https://github.com/user-attachments/assets/d856031d-81bf-437b-b295-d78dcdaf4c30" />
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <em>Image placeholders with custom sizing</em>
+    </div>
+    <div>
 
 **Configuration:**
 
@@ -379,6 +456,10 @@ require('fk_markdown').setup({
 - `show_inline` — Display inline images (requires preview plugin)
 - `placeholder` — Text to show for images
 - `max_width` — Maximum width for inline images
+
+    </div>
+  </div>
+</div>
 
 ---
 

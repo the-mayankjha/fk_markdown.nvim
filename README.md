@@ -13,17 +13,17 @@ A lightweight Neovim plugin for rendering and customizing Markdown elements with
 
 ## ✨ Features
 
+<div align="center" style="margin: 30px 0;">
+  <img alt="fk_markdown.nvim features showcase" width="80%" src="feature.png" />
+</div>
+
 - 🎨 **Fully customizable** — Configure every element with highlight groups, sizes, and styles
 - ⚡ **Lightweight** — Minimal overhead with efficient rendering
 - 🔧 **Per-element configuration** — Separate config docs for each Markdown element
 - 📝 **Wide support** — Headers, emphasis, links, tables, code blocks, quotes, callouts, lists, and images
 - 🎯 **Treesitter integration** — Enhanced syntax highlighting for code blocks
 
-<div align="center" style="margin: 30px 0;">
-  <img alt="fk_markdown.nvim features showcase" width="80%" src="feature.png" />
-</div>
 
----
 
 ## 📦 Installation
 
@@ -85,7 +85,6 @@ require('fk_markdown').setup({})
 
 For a more personalized setup, see the **Feature Configuration** section below.
 
----
 
 ## 🎨 Feature Configuration
 
@@ -98,47 +97,47 @@ Render Markdown headers (#, ##, ###, etc.) with customizable sizes, bold styling
     <img alt="Headers with icon rendering" width="100%" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
-      <em>Headers with custom styling and sizes</em>
-    </div>
+    <p align="center">
+  <em>Headers with custom styling </em>
+</p>
     <div>
 
 **Configuration:**
 
 ```lua
 require('fk_markdown').setup({
-  header = {
-    level_styles = {
-      [1] = { size = 1.6, bold = true, hl = 'Title' },
-      [2] = { size = 1.3, bold = true, hl = 'Keyword' },
-      [3] = { size = 1.1, bold = false, hl = 'Type' },
+  heading = {
+    enabled = true,
+    icon = false,
+    render_modes = false,
+    atx = true,
+    setext = true,
+    sign = true,
+
+    background = {
+        enabled = false,
+        font_color = {
+            "#1e66f5", "#fe640b", "#40a02b", "#179299", "#8839ef", "#8839ef", 
+        },
     },
-    underline = {
-      enable = true,
-      char = '─',
-      hl = 'Comment',
-    }
-  }
+},
+
 })
 ```
 
 **Options:**
-- `level_styles` — Table mapping header level (1-6) to style options
-  - `size` — Relative size multiplier (e.g., 1.6 for H1)
-  - `bold` — Apply bold styling
+- `enable` — true or false
+  - `icon` — render icon yes or no instead of # headers 
+  - `sign` — sign enable yes or no 
   - `hl` — Highlight group name
-- `underline` — Underline decoration for headers
-  - `enable` — Toggle underline rendering
-  - `char` — Character to use for underline
-  - `hl` — Highlight group for underline
+  - `background.enabled` = render background for header groups
+    - `bg_color` = header group background color
+    - `font_color` = header group font color
+
 
 [Full header configuration docs →](doc/configuration/header.md)
 
-    </div>
-  </div>
-</div>
 
----
 
 ### Code Blocks
 

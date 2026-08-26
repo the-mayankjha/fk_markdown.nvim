@@ -108,7 +108,7 @@ Render Markdown headers (#, ##, ###, etc.) with customizable sizes, bold styling
 require('fk_markdown').setup({
   heading = {
     enabled = true,
-    icon = false,
+    icon = true,
     render_modes = false,
     atx = true,
     setext = true,
@@ -148,40 +148,44 @@ Render fenced code blocks with syntax highlighting, optional line numbers, borde
     <img alt="Code blocks with syntax highlighting and borders" width="100%" src="https://github.com/user-attachments/assets/fcd53006-4cbc-46d1-bdc5-f5cc7da41c55" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
+      <p align="center">
       <em>Code blocks with line numbers and custom styling</em>
-    </div>
+      </p>
     <div>
 
 **Configuration:**
 
 ```lua
 require('fk_markdown').setup({
-  codeblock = {
-    show_line_numbers = true,
-    style = 'single',  -- 'single', 'double', or 'none'
-    hl = 'Normal',
-    gutter = {
-      enable = true,
-      width = 2
-    },
+   code = {
+        enabled = true,
+        style = 'wide', 
+        background = {
+            enabled = false,
+            color = "#181825",
+        },
+        padding = {
+            top = 1,
+            bottom = 0,
+            left = 1,
+            right = 2,
+        },
+        border = {
+            enabled = true,
+            type = dynamic,
+            
+        },
+        title = {
+            enabled = true,
+            type = dynamic, 
+        },
   }
 })
 ```
 
-**Options:**
-- `show_line_numbers` — Display line numbers (boolean)
-- `style` — Border style: `'single'`, `'double'`, or `'none'`
-- `hl` — Highlight group for code background
-- `gutter` — Left-side gutter configuration
-  - `enable` — Toggle gutter rendering
-  - `width` — Width of the gutter in columns
 
 [Full codeblock configuration docs →](doc/configuration/codeblock.md)
 
-    </div>
-  </div>
-</div>
 
 ---
 
@@ -194,9 +198,9 @@ Render Markdown tables with configurable borders, alignment, and alternating row
     <img alt="Markdown tables with borders and row highlighting" width="100%" src="https://github.com/user-attachments/assets/3706dc15-80e3-4c3b-aece-4042ed55928e" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
+    <p align="center">
       <em>Tables with borders and alternating row colors</em>
-    </div>
+    </p>
     <div>
 
 **Configuration:**
@@ -241,33 +245,31 @@ Render informational callouts with icons, custom colors, and titles (info, warn,
     <img alt="Callouts with icons and colors" width="100%" src="https://github.com/user-attachments/assets/d81b57b4-cad3-45b3-bc25-f9d1f88438e8" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
+    <p align="center">
       <em>Callouts for info, warning, error, and success messages</em>
-    </div>
+    </p>
     <div>
 
 **Configuration:**
 
 ```lua
 require('fk_markdown').setup({
-  callout = {
-    icons = {
-      info = 'ℹ️',
-      warn = '⚠️',
-      error = '❌',
-      success = '✅'
+quote = {
+        enabled = true,
+        -- 'compact' = simple left-bar (default render-markdown style)
+        -- 'boxy'    = Notion-like container with bg fill + accent bar
+        style = 'boxy',
+        -- Background fill color (hex or highlight group name).
+        -- Set to 'NONE' or omit to disable background fill.
+        bg = "NONE",
+        -- Foreground / text color override (hex or highlight group name).
+        -- If nil, uses the callout's own highlight group color.
+        -- nil = use Normal fg (white from colorscheme). Set hex to override.
+        fg = "#cad3f5",
+        -- Left accent border bar. true = shown (default), false = hidden.
+        border = true,
     },
-    highlights = {
-      info = 'Hint',
-      warn = 'WarningMsg',
-      error = 'Error',
-      success = 'DiagnosticOk'
-    },
-    border = {
-      enable = true,
-      style = 'rounded'  -- 'rounded' or 'square'
-    }
-  }
+
 })
 ```
 
@@ -295,31 +297,11 @@ Customize text emphasis with highlight groups and font features.
     <img alt="Bold, italic, and underlined text" width="100%" src="https://github.com/user-attachments/assets/561dd3ee-287e-40cd-8bfd-5eddfe80aa9f" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
+    <p align="center">
       <em>Text emphasis with custom highlight groups</em>
-    </div>
+    </p>
     <div>
 
-**Configuration:**
-
-```lua
-require('fk_markdown').setup({
-  emphasis = {
-    bold = { hl = 'Bold', enable = true },
-    italic = { hl = 'Italic', enable = true },
-    underline = { hl = 'Underline', enable = true },
-  }
-})
-```
-
-**Options:**
-- `bold`, `italic`, `underline` — Each takes:
-  - `hl` — Highlight group name
-  - `enable` — Toggle rendering
-
-    </div>
-  </div>
-</div>
 
 ---
 
@@ -332,31 +314,11 @@ Customize bullet characters, indentation, and nested list rendering.
     <img alt="Bulleted and numbered lists" width="100%" src="https://github.com/user-attachments/assets/205f6f10-0ba4-4e60-9d77-4704bff78354" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
+    <p align="center">
       <em>Lists with custom bullets and indentation</em>
-    </div>
+    </p>
     <div>
 
-**Configuration:**
-
-```lua
-require('fk_markdown').setup({
-  lists = {
-    bullet = '•',
-    nested_offset = 2,
-    enable_tight_lists = true,
-  }
-})
-```
-
-**Options:**
-- `bullet` — Bullet character (string)
-- `nested_offset` — Indentation width for nested lists
-- `enable_tight_lists` — Compact spacing for lists (boolean)
-
-    </div>
-  </div>
-</div>
 
 ---
 
@@ -369,31 +331,10 @@ Control link styling and enable click/mapping support.
     <img alt="Styled links" width="100%" src="https://github.com/user-attachments/assets/45c48f26-09a7-4903-b20d-732fcccf5918" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
+    <p align="center">
       <em>Links with custom highlighting and decoration</em>
-    </div>
+    </p>
     <div>
-
-**Configuration:**
-
-```lua
-require('fk_markdown').setup({
-  links = {
-    hl = 'Underlined',
-    open_mapping = '<CR>',  -- optional: map to open links
-    show_url_on_hover = true,
-  }
-})
-```
-
-**Options:**
-- `hl` — Highlight group for links
-- `open_mapping` — Key mapping to open links (optional)
-- `show_url_on_hover` — Display URL on hover (boolean)
-
-    </div>
-  </div>
-</div>
 
 ---
 
@@ -406,31 +347,12 @@ Render blockquotes with a vertical bar, custom highlight, and optional author la
     <img alt="Blockquotes with vertical bar" width="100%" src="https://github.com/user-attachments/assets/87c292d5-1010-4cab-83c3-2f32e710eb92" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
+    <p align="center">
       <em>Blockquotes with custom styling</em>
-    </div>
+    </p>
     <div>
 
-**Configuration:**
 
-```lua
-require('fk_markdown').setup({
-  quotation = {
-    bar_char = '│',
-    highlight = 'Comment',
-    show_author = true,
-  }
-})
-```
-
-**Options:**
-- `bar_char` — Character for the left border
-- `highlight` — Highlight group for the quote
-- `show_author` — Display author attribution (boolean)
-
-    </div>
-  </div>
-</div>
 
 ---
 
@@ -443,31 +365,11 @@ Configure inline image placeholders and optional preview support.
     <img alt="Image placeholders" width="100%" src="https://github.com/user-attachments/assets/d856031d-81bf-437b-b295-d78dcdaf4c30" />
   </div>
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-    <div style="text-align: center; margin-bottom: 15px;">
-      <em>Image placeholders with custom sizing</em>
-    </div>
+   <em align="center">
+     <em>Image placeholders with custom sizing</em>
+   </em>
     <div>
 
-**Configuration:**
-
-```lua
-require('fk_markdown').setup({
-  images = {
-    show_inline = true,
-    placeholder = '[IMAGE]',
-    max_width = 80,
-  }
-})
-```
-
-**Options:**
-- `show_inline` — Display inline images (requires preview plugin)
-- `placeholder` — Text to show for images
-- `max_width` — Maximum width for inline images
-
-    </div>
-  </div>
-</div>
 
 ---
 
@@ -475,54 +377,94 @@ require('fk_markdown').setup({
 
 ```lua
 require('fk_markdown').setup({
-  header = {
-    level_styles = {
-      [1] = { size = 1.6, bold = true, hl = 'Title' },
-      [2] = { size = 1.3, bold = true, hl = 'Keyword' },
-      [3] = { size = 1.1, bold = false, hl = 'Type' },
+heading = {
+    enabled = true,
+    icon = false,
+    render_modes = false,
+    atx = true,
+    setext = true,
+    sign = true,
+
+    icons = {
+        '󰲡 ',
+        '󰲣 ',
+        '󰲥 ',
+        '󰲧 ',
+        '󰲩 ',
+        '󰲫 ',
     },
-    underline = { enable = true, char = '─', hl = 'Comment' }
-  },
-  codeblock = {
-    show_line_numbers = false,
-    style = 'single',
-    hl = 'Normal',
-    gutter = { enable = true, width = 2 },
-  },
-  callout = {
-    icons = { info = 'ℹ️', warn = '⚠️', error = '❌', success = '✅' },
-    highlights = { info = 'Hint', warn = 'WarningMsg', error = 'Error', success = 'DiagnosticOk' },
-    border = { enable = true, style = 'rounded' }
-  },
-  table = {
-    border = { enable = true, style = 'single' },
-    align = { default = 'left' },
-    alternate_rows = true,
-  },
-  emphasis = {
-    bold = { hl = 'Bold', enable = true },
-    italic = { hl = 'Italic', enable = true },
-    underline = { hl = 'Underline', enable = false },
-  },
-  lists = {
-    bullet = '•',
-    nested_offset = 2,
-    enable_tight_lists = true,
-  },
-  links = {
-    hl = 'Underlined',
-    show_url_on_hover = true,
-  },
-  quotation = {
-    bar_char = '│',
-    highlight = 'Comment',
-    show_author = false,
-  },
-  images = {
-    show_inline = false,
-    placeholder = '[IMAGE]',
-    max_width = 80,
-  }
+
+    background = {
+        enabled = false,
+         -- Light / pastel Catppuccin-style backgrounds
+        bg_color = {
+            "#dce7ff", -- H1 — soft blue
+            "#ffe4d6", -- H2 — soft peach
+            "#e4f3df", -- H3 — soft green
+            "#d9f4f0", -- H4 — soft teal
+            "#eee4ff", -- H5 — soft mauve
+            "#eee4ff", -- H6 — soft mauve
+        },
+
+        -- Stronger Catppuccin accent text
+        font_color = {
+            "#1e66f5", -- H1 Blue
+            "#fe640b", -- H2 Peach
+            "#40a02b", -- H3 Green
+            "#179299", -- H4 Teal
+            "#8839ef", -- H5 Mauve
+            "#8839ef", -- H6 Mauve
+        },
+  
+    },
+},
+    code = {
+        enabled = true,
+        style = 'wide', -- 'wide' or 'compact'
+        background = {
+            enabled = false,
+            color = "#181825",
+        },
+        padding = {
+            top = 1,
+            bottom = 0,
+            left = 1,
+            right = 2,
+        },
+        border = {
+            enabled = true,
+            type = dynamic,
+            
+        },
+        title = {
+            enabled = true,
+            type = dynamic, 
+        },
+        icon = {
+            enabled = true,
+            -- Not currently used by renderer, but structurally valid for future
+            pill = true,
+            pill_style = 'wide',
+        },
+        info = {
+            position = 'left',
+        },
+    },
+    quote = {
+        enabled = true,
+        -- 'compact' = simple left-bar (default render-markdown style)
+        -- 'boxy'    = Notion-like container with bg fill + accent bar
+        style = 'boxy',
+        -- Background fill color (hex or highlight group name).
+        -- Set to 'NONE' or omit to disable background fill.
+        bg = "NONE",
+        -- Foreground / text color override (hex or highlight group name).
+        -- If nil, uses the callout's own highlight group color.
+        -- nil = use Normal fg (white from colorscheme). Set hex to override.
+        fg = "#cad3f5",
+        -- Left accent border bar. true = shown (default), false = hidden.
+        border = true,
+    },
 })
 ```
 

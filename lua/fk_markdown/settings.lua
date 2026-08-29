@@ -1910,4 +1910,24 @@ function M.yaml.schema()
     return M.base.schema({})
 end
 
+
+M.preview = {
+    default = {
+        enabled = true,
+        auto_start = false,
+        auto_close = true,
+        browser = "",
+        browser_func = nil,
+        port = nil,
+        open_ip = "127.0.0.1",
+        theme = "dark",
+        sync_scroll = true,
+        keymap = {
+            start = false,
+            stop = false,
+            toggle = false,
+        },
+    },
+}
+
 return M

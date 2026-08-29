@@ -118,6 +118,7 @@ M.default = {
     overrides = settings.overrides.default,
     custom_handlers = settings.handlers.default,
     yaml = settings.yaml.default,
+    preview = settings.preview.default,
 }
 
 ---@param opts? render.md.UserConfig

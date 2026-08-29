@@ -546,3 +546,40 @@ Licensed under the MIT License. See LICENSE for details.
 ## 🙏 Acknowledgments
 
 Built with ❤️ for the Neovim community. Thanks to all contributors and users!
+
+## 🌐 Browser Preview
+
+You can preview your Markdown documents live in a web browser, with automatic updates as you type.
+
+### Commands
+
+- `:FkPreview` - Start the preview server and open the browser.
+- `:FkPreviewStop` - Stop the preview server.
+- `:FkPreviewToggle` - Toggle the preview server.
+
+### Setup
+
+```lua
+require('fk_markdown').setup({
+    preview = {
+        enabled = true,
+        auto_start = false,
+        auto_close = true,
+        browser = "",
+        open_ip = "127.0.0.1",
+        port = nil, -- random port
+        theme = "dark",
+        keymap = {
+            start = "<leader>mp",
+            stop = "<leader>ms",
+            toggle = "<leader>mt",
+        },
+    }
+})
+```
+
+### Features
+
+- ⚡ **Zero Dependencies**: Uses Neovim's built-in `vim.uv` (or `vim.loop`) for the local HTTP server.
+- 🔄 **Live Reload**: Automatically pushes updates using Server-Sent Events (SSE).
+- 🖼️ **Local Images**: Correctly resolves and serves local image files relative to the Markdown document.

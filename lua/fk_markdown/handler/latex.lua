@@ -103,6 +103,41 @@ local function invalid_banner(cols)
     return string.rep(' ', left) .. label .. string.rep(' ', right), hl
 end
 
+---Last buffer row of a TS node (nvim range end is exclusive when end_col == 0).
+---@private
+---@param node render.md.Node
+---@return integer
+local function last_row(node)
+    if node.end_col == 0 and node.end_row > node.start_row then
+        return node.end_row - 1
+    end
+    return node.end_row
+end
+
+---Hide every source line after the first so only the rendered image remains.
+---@private
+function Handler:hide_source_tail(node)
+    local compat = require('fk_markdown.lib.compat')
+    local buf = self.context.buf
+    local last = last_row(node)
+    for r = node.start_row + 1, last do
+        if compat.has_11 then
+            self.marks:add(self.config, 'latex', r, 0, { conceal_lines = '' })
+        else
+            local line = vim.api.nvim_buf_get_lines(buf, r, r + 1, false)[1] or ''
+            local w = math.max(1, vim.fn.strdisplaywidth(line))
+            self.marks:add(self.config, 'latex', r, 0, {
+                virt_text = { { string.rep(' ', w), 'Normal' } },
+                virt_text_pos = 'overlay',
+                virt_text_hide = true,
+                conceal = '',
+                end_row = r,
+                end_col = math.max(#line, 1),
+            })
+        end
+    end
+end
+
 ---@private
 function Handler:render_images(nodes)
     local state = require('fk_markdown.latex.state')
@@ -133,49 +168,59 @@ function Handler:render_images(nodes)
 
             if err and err.equation == input then
                 local text, hl = invalid_banner(source_cols)
+                local line = vim.api.nvim_buf_get_lines(
+                    self.context.buf,
+                    node.start_row,
+                    node.start_row + 1,
+                    false
+                )[1] or ''
                 self.marks:add(self.config, 'latex', node.start_row, node.start_col, {
                     virt_text = { { text, hl } },
                     virt_text_pos = 'overlay',
                     virt_text_hide = true,
+                    conceal = '',
+                    end_row = node.start_row,
+                    end_col = math.max(#line, node.start_col + 1),
                 })
-                -- Cover remaining source lines so raw TeX does not peek through.
-                for r = node.start_row + 1, node.end_row do
-                    self.marks:add(self.config, 'latex', r, 0, {
-                        virt_text = { { string.rep(' ', math.max(source_cols, vim.fn.strdisplaywidth(text))), hl } },
-                        virt_text_pos = 'overlay',
-                        virt_text_hide = true,
-                    })
-                end
+                self:hide_source_tail(node)
             elseif not active or active.equation ~= input then
                 state.request_render(input, self.config, node_id, source_cols, function()
                     refresh()
                 end)
             else
-                local img_cols = math.max(active.cols, source_cols)
+                -- Draw the full image on the first source line; hide the rest of
+                -- the $$ block so multiline TeX is not left sitting under the PNG.
+                local img_cols = active.cols
                 local img_rows = active.rows
                 local hl = kitty.get_highlight(active.id)
-                local src_rows = node:height()
+                local line = vim.api.nvim_buf_get_lines(
+                    self.context.buf,
+                    node.start_row,
+                    node.start_row + 1,
+                    false
+                )[1] or ''
 
-                for i = 1, math.min(src_rows, img_rows) do
-                    local row = node.start_row + i - 1
-                    local col = i == 1 and node.start_col or 0
-                    self.marks:add(self.config, 'latex', row, col, {
-                        virt_text = { { kitty.build_placeholder_row(i, img_cols), hl } },
-                        virt_text_pos = 'overlay',
-                        virt_text_hide = true,
-                    })
-                end
+                self.marks:add(self.config, 'latex', node.start_row, node.start_col, {
+                    virt_text = { { kitty.build_placeholder_row(1, img_cols), hl } },
+                    virt_text_pos = 'overlay',
+                    virt_text_hide = true,
+                    conceal = '',
+                    end_row = node.start_row,
+                    end_col = math.max(#line, node.start_col + 1),
+                })
 
-                if img_rows > src_rows then
+                if img_rows > 1 then
                     local extra = {}
-                    for r = src_rows + 1, img_rows do
+                    for r = 2, img_rows do
                         extra[#extra + 1] = { { kitty.build_placeholder_row(r, img_cols), hl } }
                     end
-                    self.marks:add(self.config, 'virtual_lines', node.end_row, 0, {
+                    self.marks:add(self.config, 'virtual_lines', node.start_row, 0, {
                         virt_lines = extra,
                         virt_lines_above = false,
                     })
                 end
+
+                self:hide_source_tail(node)
             end
         end
     end

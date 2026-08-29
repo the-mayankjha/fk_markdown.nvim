@@ -82,8 +82,7 @@ function M:start()
                 if path == "/" then
                     local body = html_template
                     local resp = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " .. #body .. "\r\nConnection: close\r\n\r\n" .. body
-                    client:write(resp)
-                    client:close()
+                    client:write(resp, function() client:close() end)
                 elseif path == "/events" then
                     local resp = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nConnection: keep-alive\r\n\r\n"
                     client:write(resp)
@@ -92,8 +91,15 @@ function M:start()
                 else
                     -- attempt to serve local file
                     vim.schedule(function()
-                        local file_path = vim.fn.expand(vim.fn.fnamemodify(vim.api.nvim_buf_get_name(self.buf), ':h') .. path)
+                        local clean_path = path:gsub("%?.*$", "")
+                        clean_path = clean_path:gsub("%%(%x%x)", function(h)
+                            return string.char(tonumber(h, 16))
+                        end)
+                        
+                        local base_dir = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(self.buf), ':h')
+                        local file_path = vim.fn.expand(base_dir .. clean_path)
                         local f = io.open(file_path, "rb")
+                        
                         if f then
                             local content = f:read("*a")
                             f:close()
@@ -105,15 +111,12 @@ function M:start()
                             elseif ext == ".svg" then ctype = "image/svg+xml"
                             end
                             local resp = "HTTP/1.1 200 OK\r\nContent-Type: " .. ctype .. "\r\nContent-Length: " .. #content .. "\r\nConnection: close\r\n\r\n" .. content
-                            client:write(resp)
-                            client:close()
+                            client:write(resp, function() client:close() end)
                         else
-                            client:write("HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")
-                            client:close()
+                            client:write("HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n", function() client:close() end)
                         end
                     end)
                 end
-
             end
         end)
     end)

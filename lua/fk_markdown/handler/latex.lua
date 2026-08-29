@@ -31,14 +31,9 @@ end
 ---@param root TSNode
 ---@param last boolean
 ---@return render.md.Mark[]
+
 function Handler:run(root, last)
     if not self.config.enabled then
-        return {}
-    end
-
-    local cmds = env.commands(self.config.converter)
-    if #cmds == 0 then
-        log.add('debug', 'ConverterNotFound', self.config.converter)
         return {}
     end
 
@@ -53,22 +48,139 @@ function Handler:run(root, last)
 
     if last then
         local nodes = self.context.latex:get()
-        local inputs = Handler.inputs(nodes)
-        for _, cmd in ipairs(cmds) do
-            inputs = Handler.convert(cmd, inputs)
+        local use_image = false
+
+        if self.config.render_method == 'image' then
+            -- Check at runtime whether image rendering is actually possible
+            local kitty = require('fk_markdown.latex.kitty')
+            local latex_backend = require('fk_markdown.latex.backend')
+            use_image = kitty.is_supported() and latex_backend.resolve(self.config) ~= nil
         end
-        for _, input in ipairs(inputs) do
-            log.add('error', 'ConvertersFailed', input)
-            Handler.cache[input] = 'error'
-        end
-        local rows = self:rows(nodes)
-        for row, row_nodes in pairs(rows) do
-            self:render(row, row_nodes)
+
+        if use_image then
+            self:render_images(nodes)
+        else
+            -- Text-based rendering (original utftex / latex2text pipeline)
+            local cmds = env.commands(self.config.converter)
+            if #cmds > 0 then
+                local inputs = Handler.inputs(nodes)
+                for _, cmd in ipairs(cmds) do
+                    inputs = Handler.convert(cmd, inputs)
+                end
+                for _, input in ipairs(inputs) do
+                    log.add('error', 'ConvertersFailed', input)
+                    Handler.cache[input] = 'error'
+                end
+                local rows = self:rows(nodes)
+                for row, row_nodes in pairs(rows) do
+                    self:render(row, row_nodes)
+                end
+            end
         end
     end
 
     return self.marks:get()
 end
+
+---@private
+---@param cols integer
+---@return string, string
+local function invalid_banner(cols)
+    local hl = 'FkLatexInvalid'
+    vim.api.nvim_set_hl(0, hl, {
+        fg = '#1e1e2e',
+        bg = '#f38ba8',
+        bold = true,
+        default = true,
+    })
+    local label = '  ⚠  Invalid Equation  '
+    local width = math.max(cols, 48, vim.fn.strdisplaywidth(label) + 4)
+    width = math.min(width, math.max(48, vim.o.columns - 4))
+    local inner = vim.fn.strdisplaywidth(label)
+    local pad = math.max(0, width - inner)
+    local left = math.floor(pad / 2)
+    local right = pad - left
+    return string.rep(' ', left) .. label .. string.rep(' ', right), hl
+end
+
+---@private
+function Handler:render_images(nodes)
+    local state = require('fk_markdown.latex.state')
+    local kitty = require('fk_markdown.latex.kitty')
+    local mode = vim.fn.mode()
+    local in_insert = mode == 'i' and self.config.hide_on_insert
+
+    local function refresh()
+        if vim.api.nvim_buf_is_valid(self.context.buf) then
+            pcall(
+                require('fk_markdown.core.ui').update,
+                self.context.buf,
+                self.context.win,
+                'UserCommand',
+                true
+            )
+        end
+    end
+
+    for _, node in ipairs(nodes) do
+        local node_id = tostring(node.start_row) .. '_' .. tostring(node.start_col)
+        local input = Handler.input(node)
+        local source_cols = math.max(1, vim.fn.strdisplaywidth(node.text))
+
+        if not in_insert then
+            local err = state.errors[node_id]
+            local active = state.active_images[node_id]
+
+            if err and err.equation == input then
+                local text, hl = invalid_banner(source_cols)
+                self.marks:add(self.config, 'latex', node.start_row, node.start_col, {
+                    virt_text = { { text, hl } },
+                    virt_text_pos = 'overlay',
+                    virt_text_hide = true,
+                })
+                -- Cover remaining source lines so raw TeX does not peek through.
+                for r = node.start_row + 1, node.end_row do
+                    self.marks:add(self.config, 'latex', r, 0, {
+                        virt_text = { { string.rep(' ', math.max(source_cols, vim.fn.strdisplaywidth(text))), hl } },
+                        virt_text_pos = 'overlay',
+                        virt_text_hide = true,
+                    })
+                end
+            elseif not active or active.equation ~= input then
+                state.request_render(input, self.config, node_id, source_cols, function()
+                    refresh()
+                end)
+            else
+                local img_cols = math.max(active.cols, source_cols)
+                local img_rows = active.rows
+                local hl = kitty.get_highlight(active.id)
+                local src_rows = node:height()
+
+                for i = 1, math.min(src_rows, img_rows) do
+                    local row = node.start_row + i - 1
+                    local col = i == 1 and node.start_col or 0
+                    self.marks:add(self.config, 'latex', row, col, {
+                        virt_text = { { kitty.build_placeholder_row(i, img_cols), hl } },
+                        virt_text_pos = 'overlay',
+                        virt_text_hide = true,
+                    })
+                end
+
+                if img_rows > src_rows then
+                    local extra = {}
+                    for r = src_rows + 1, img_rows do
+                        extra[#extra + 1] = { { kitty.build_placeholder_row(r, img_cols), hl } }
+                    end
+                    self.marks:add(self.config, 'virtual_lines', node.end_row, 0, {
+                        virt_lines = extra,
+                        virt_lines_above = false,
+                    })
+                end
+            end
+        end
+    end
+end
+
 
 ---@private
 ---@param nodes render.md.Node[]
@@ -88,8 +200,10 @@ end
 ---@param node render.md.Node
 ---@return string
 function Handler.input(node)
-    local text = node.text
-    return vim.trim(text:match('^%$*(.-)%$*$') or text)
+    local text = vim.trim(node.text)
+    text = text:gsub('^%$+', ''):gsub('%$+$', '')
+    text = require('fk_markdown.latex.backend').sanitize_tex(text)
+    return vim.trim(text)
 end
 
 ---@private

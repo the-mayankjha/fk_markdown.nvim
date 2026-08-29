@@ -13,6 +13,18 @@ function M.init()
         require('fk_markdown.preview').toggle()
     end, { desc = 'Toggle fk_markdown browser preview' })
 
+    vim.api.nvim_create_user_command('FkAutoscroll', function(opts)
+        local state = require('fk_markdown.state')
+        if opts.args == 'true' then
+            state.config.preview.auto_scroll = true
+        elseif opts.args == 'false' then
+            state.config.preview.auto_scroll = false
+        else
+            state.config.preview.auto_scroll = not state.config.preview.auto_scroll
+        end
+        vim.notify("FkMarkdown auto scroll set to " .. tostring(state.config.preview.auto_scroll), vim.log.levels.INFO)
+    end, { desc = 'Toggle auto scroll in preview', nargs = '?' })
+
     local state = require('fk_markdown.state')
     local config = state.config.preview or {}
     if config.keymap then

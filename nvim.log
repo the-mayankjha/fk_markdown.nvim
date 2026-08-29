@@ -1,0 +1,2 @@
+WRN 2026-08-29T22:34:35.918 ?.66303    server_start:197: Failed to start server: operation not permitted: /var/folders/x8/7lq_z0vd2_j9k2rfyftnyqjr0000gn/T/nvim.mayankjha/8pPA13/nvim.66303.0
+WRN 2026-08-29T22:50:46.716 ?.68238    server_start:197: Failed to start server: operation not permitted: /var/folders/x8/7lq_z0vd2_j9k2rfyftnyqjr0000gn/T/nvim.mayankjha/MClOBq/nvim.68238.0

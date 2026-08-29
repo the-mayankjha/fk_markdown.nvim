@@ -37,7 +37,7 @@ es.onmessage = function(e) {
     const payload = JSON.parse(e.data);
     if (payload.type === 'update') {
         contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(payload.text));
-        if (payload.total_lines > 0) {
+        if (payload.auto_scroll && payload.total_lines > 0) {
             const percent = (payload.line - 1) / (payload.total_lines > 1 ? payload.total_lines - 1 : 1);
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
             if (maxScroll > 0) {
@@ -149,6 +149,8 @@ function M:start()
 end
 
 function M:send_scroll()
+    local state = require('fk_markdown.state')
+    if not state.config.preview.auto_scroll then return end
     vim.schedule(function()
         if not vim.api.nvim_buf_is_valid(self.buf) then return end
         local win = vim.fn.bufwinid(self.buf)
@@ -182,14 +184,18 @@ function M:send_update()
         local lines = vim.api.nvim_buf_get_lines(self.buf, 0, -1, false)
         local text = table.concat(lines, "\n")
         
+        local state = require('fk_markdown.state')
+        local auto_scroll = state.config.preview.auto_scroll
         local current_line = 1
-        local win = vim.fn.bufwinid(self.buf)
-        if win ~= -1 then
-            current_line = vim.api.nvim_win_get_cursor(win)[1]
-        end
         local total_lines = #lines
+        if auto_scroll then
+            local win = vim.fn.bufwinid(self.buf)
+            if win ~= -1 then
+                current_line = vim.api.nvim_win_get_cursor(win)[1]
+            end
+        end
         
-        local payload_obj = { type = "update", text = text, line = current_line, total_lines = total_lines }
+        local payload_obj = { type = "update", text = text, line = current_line, total_lines = total_lines, auto_scroll = auto_scroll }
         local data = vim.json.encode(payload_obj)
         local payload = "data: " .. data .. "\n\n"
         

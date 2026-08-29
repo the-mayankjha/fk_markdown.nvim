@@ -15,6 +15,26 @@ local M = {}
 
 ---called from plugin directory
 function M.init()
+
+    vim.api.nvim_create_user_command('FkLatexToggle', function()
+        local config = require('fk_markdown.state').config.latex
+        config.enabled = not config.enabled
+        require('fk_markdown.core.ui').update(0, vim.api.nvim_get_current_win(), 'UserCommand', true)
+    end, { desc = 'Toggle LaTeX rendering' })
+
+    vim.api.nvim_create_user_command('FkLatexClearCache', function()
+        local cache_dir = require('fk_markdown.state').config.latex.cache_dir
+        if vim.fn.isdirectory(cache_dir) == 1 then
+            vim.fn.delete(cache_dir, 'rf')
+        end
+        require('fk_markdown.latex.state').clear_all()
+        vim.notify('FkMarkdown: LaTeX cache cleared', vim.log.levels.INFO)
+    end, { desc = 'Clear LaTeX rendering cache' })
+
+    vim.api.nvim_create_user_command('FkLatexHealth', function()
+        require('fk_markdown.latex.health').run()
+    end, { desc = 'Show LaTeX rendering health status in a split buffer' })
+
     vim.api.nvim_create_user_command(name, M.command, {
         nargs = '*',
         desc = plugin .. ' commands',

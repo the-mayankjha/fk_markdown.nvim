@@ -218,6 +218,14 @@
 ---@field position? render.md.latex.Position
 ---@field top_pad? integer
 ---@field bottom_pad? integer
+---@field render_method? string
+---@field backend? string
+---@field cache_dir? string
+---@field anticonceal? boolean
+---@field hide_on_insert? boolean
+---@field dynamic_scale? number
+---@field image_background? string
+---@field update_interval? integer
 
 ---@class (exact) render.md.link.UserConfig: render.md.base.UserConfig
 ---@field footnote? render.md.link.footnote.UserConfig

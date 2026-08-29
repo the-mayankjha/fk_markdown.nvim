@@ -1185,6 +1185,14 @@ end
 M.latex = {}
 
 ---@class (exact) render.md.latex.Config: render.md.base.Config
+---@field render_method string
+---@field backend string
+---@field cache_dir string
+---@field anticonceal boolean
+---@field hide_on_insert boolean
+---@field dynamic_scale number
+---@field image_background string
+---@field update_interval integer
 ---@field converter string|string[]
 ---@field inline boolean
 ---@field block boolean
@@ -1206,7 +1214,24 @@ M.latex.default = {
     enabled = true,
     -- Additional modes to render latex.
     render_modes = false,
-    -- Executable used to convert latex formula to rendered unicode.
+    -- Render method: 'image' (Kitty Graphics Protocol) or 'text' (unicode).
+    render_method = 'image',
+    -- Backend for image rendering: 'mathjax', 'network', or 'auto'.
+    backend = 'auto',
+    -- Cache directory for generated LaTeX images.
+    cache_dir = vim.fn.stdpath("cache") .. "/fk_markdown/latex",
+    -- Temporarily reveal the raw LaTeX source when the cursor is over it.
+    anticonceal = true,
+    -- Hide rendered math when in insert mode.
+    hide_on_insert = true,
+    -- Scale factor for the rendered images.
+    dynamic_scale = 1.0,
+    -- Image canvas: 'transparent' (default), 'match' (black/white from background),
+    -- or a hex color like '#1e1e2e'.
+    image_background = 'transparent',
+    -- Update interval in milliseconds.
+    update_interval = 400,
+    -- Executable used to convert latex formula to rendered unicode (for 'text' method).
     -- If a list is provided the commands run in order until the first success.
     converter = { 'utftex', 'latex2text' },
     -- Render inline latex formulas.
@@ -1229,6 +1254,14 @@ M.latex.default = {
 ---@return render.md.Schema
 function M.latex.schema()
     return M.base.schema({
+        render_method = { type = 'string' },
+        backend = { type = 'string' },
+        cache_dir = { type = 'string' },
+        anticonceal = { type = 'boolean' },
+        hide_on_insert = { type = 'boolean' },
+        dynamic_scale = { type = 'number' },
+        image_background = { type = 'string' },
+        update_interval = { type = 'number' },
         converter = {
             union = { { list = { type = 'string' } }, { type = 'string' } },
         },
@@ -1916,12 +1949,12 @@ M.preview = {
         enabled = true,
         auto_start = false,
         auto_close = true,
+        auto_scroll = true,
         browser = "",
         browser_func = nil,
         port = nil,
         open_ip = "127.0.0.1",
         theme = "dark",
-        sync_scroll = true,
         keymap = {
             start = false,
             stop = false,

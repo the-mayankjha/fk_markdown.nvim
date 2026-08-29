@@ -18,6 +18,7 @@
 ---@field indent? render.md.indent.UserConfig
 ---@field inline_highlight? render.md.inline.highlight.UserConfig
 ---@field latex? render.md.latex.UserConfig
+---@field image? render.md.image.UserConfig
 ---@field link? render.md.link.UserConfig
 ---@field padding? render.md.padding.UserConfig
 ---@field paragraph? render.md.paragraph.UserConfig
@@ -225,6 +226,12 @@
 ---@field hide_on_insert? boolean
 ---@field dynamic_scale? number
 ---@field image_background? string
+---@field update_interval? integer
+
+---@class (exact) render.md.image.UserConfig: render.md.base.UserConfig
+---@field size? string|number
+---@field max_height? integer
+---@field cache_dir? string
 ---@field update_interval? integer
 
 ---@class (exact) render.md.link.UserConfig: render.md.base.UserConfig

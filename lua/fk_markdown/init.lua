@@ -21,6 +21,7 @@ local M = {}
 ---@field indent render.md.indent.Config
 ---@field inline_highlight render.md.inline.highlight.Config
 ---@field latex render.md.latex.Config
+---@field image render.md.image.Config
 ---@field link render.md.link.Config
 ---@field padding render.md.padding.Config
 ---@field paragraph render.md.paragraph.Config
@@ -96,6 +97,7 @@ M.default = {
     anti_conceal = settings.anti_conceal.default,
     padding = settings.padding.default,
     latex = settings.latex.default,
+    image = settings.image.default,
     on = settings.on.default,
     completions = settings.completions.default,
     heading = settings.heading.default,

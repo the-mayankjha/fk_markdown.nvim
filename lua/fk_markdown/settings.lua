@@ -1274,6 +1274,42 @@ function M.latex.schema()
     })
 end
 
+---@class render.md.image.Settings
+M.image = {}
+
+---@class (exact) render.md.image.Config: render.md.base.Config
+---@field size string|number
+---@field max_height integer
+---@field cache_dir string
+---@field update_interval integer
+
+---@type render.md.image.Config
+M.image.default = {
+    -- Render markdown images (`![alt](path)`) via Kitty unicode placeholders.
+    enabled = true,
+    render_modes = false,
+    -- 'auto' uses the image pixel size (cells = pixels / cell size).
+    -- Wider-than-window images shrink so the placeholder grid does not wrap.
+    -- A number is a maximum width in terminal cells.
+    size = 'auto',
+    -- Optional max height in cells when size is a number (ignored for 'auto').
+    max_height = 40,
+    cache_dir = vim.fn.stdpath('cache') .. '/fk_markdown/images',
+    update_interval = 100,
+}
+
+---@return render.md.Schema
+function M.image.schema()
+    return M.base.schema({
+        size = {
+            union = { { type = 'string' }, { type = 'number' } },
+        },
+        max_height = { type = 'number' },
+        cache_dir = { type = 'string' },
+        update_interval = { type = 'number' },
+    })
+end
+
 ---@class render.md.link.Settings
 M.link = {}
 
@@ -1517,7 +1553,7 @@ M.overrides.default = {
     -- behavior. Values default to the top level configuration if no override is provided. Supports
     -- the following fields:
     --   enabled, render_modes, debounce, anti_conceal, bullet, callout, checkbox, code, dash,
-    --   document, heading, html, indent, inline_highlight, latex, link, padding, paragraph,
+    --   document, heading, html, indent, inline_highlight, latex, image, link, padding, paragraph,
     --   pipe_table, quote, sign, win_options, yaml
 
     -- Override for different buflisted values, @see :h 'buflisted'.

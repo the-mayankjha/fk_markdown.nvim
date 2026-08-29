@@ -51,6 +51,12 @@ end
 
 ---@protected
 function Render:run()
+    if self.node.type == 'image' then
+        local ok = require('fk_markdown.image').try_render(self.context, self.marks, self.node)
+        if ok then
+            return
+        end
+    end
     self.marks:start(self.config, 'link', self.node, {
         priority = 9000,
         hl_mode = 'combine',

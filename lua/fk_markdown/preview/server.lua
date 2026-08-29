@@ -34,8 +34,25 @@ body { font-family: sans-serif; padding: 20px; max-width: 900px; margin: auto; b
 const contentDiv = document.getElementById('content');
 const es = new EventSource('/events');
 es.onmessage = function(e) {
-    const md = JSON.parse(e.data);
-    contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(md));
+    const payload = JSON.parse(e.data);
+    if (payload.type === 'update') {
+        contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(payload.text));
+        if (payload.total_lines > 0) {
+            const percent = (payload.line - 1) / (payload.total_lines > 1 ? payload.total_lines - 1 : 1);
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (maxScroll > 0) {
+                window.scrollTo({ top: maxScroll * percent, behavior: 'instant' });
+            }
+        }
+    } else if (payload.type === 'scroll') {
+        if (payload.total_lines > 0) {
+            const percent = (payload.line - 1) / (payload.total_lines > 1 ? payload.total_lines - 1 : 1);
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (maxScroll > 0) {
+                window.scrollTo({ top: maxScroll * percent, behavior: 'smooth' });
+            }
+        }
+    }
 };
 </script>
 </body>
@@ -109,6 +126,14 @@ function M:start()
         end
     })
     
+    vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+        buffer = self.buf,
+        group = self.group,
+        callback = function()
+            self:send_scroll()
+        end
+    })
+    
     vim.api.nvim_create_autocmd("BufUnload", {
         buffer = self.buf,
         group = self.group,
@@ -120,12 +145,49 @@ function M:start()
     return true
 end
 
+function M:send_scroll()
+    vim.schedule(function()
+        if not vim.api.nvim_buf_is_valid(self.buf) then return end
+        local win = vim.fn.bufwinid(self.buf)
+        if win == -1 then return end
+        
+        local current_line = vim.api.nvim_win_get_cursor(win)[1]
+        local total_lines = vim.api.nvim_buf_line_count(self.buf)
+        
+        local payload_obj = {
+            type = "scroll",
+            line = current_line,
+            total_lines = total_lines
+        }
+        local data = vim.json.encode(payload_obj)
+        local payload = "data: " .. data .. "\n\n"
+        
+        local active_clients = {}
+        for _, client in ipairs(self.clients) do
+            if client:is_active() then
+                client:write(payload)
+                table.insert(active_clients, client)
+            end
+        end
+        self.clients = active_clients
+    end)
+end
+
 function M:send_update()
     vim.schedule(function()
         if not vim.api.nvim_buf_is_valid(self.buf) then return end
         local lines = vim.api.nvim_buf_get_lines(self.buf, 0, -1, false)
         local text = table.concat(lines, "\n")
-        local data = vim.json.encode(text)
+        
+        local current_line = 1
+        local win = vim.fn.bufwinid(self.buf)
+        if win ~= -1 then
+            current_line = vim.api.nvim_win_get_cursor(win)[1]
+        end
+        local total_lines = #lines
+        
+        local payload_obj = { type = "update", text = text, line = current_line, total_lines = total_lines }
+        local data = vim.json.encode(payload_obj)
         local payload = "data: " .. data .. "\n\n"
         
         local active_clients = {}

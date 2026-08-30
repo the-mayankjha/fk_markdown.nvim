@@ -231,6 +231,7 @@
 ---@class (exact) render.md.image.UserConfig: render.md.base.UserConfig
 ---@field size? string|number
 ---@field max_height? integer
+---@field html? boolean
 ---@field cache_dir? string
 ---@field update_interval? integer
 

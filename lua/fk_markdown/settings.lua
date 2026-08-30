@@ -1280,6 +1280,7 @@ M.image = {}
 ---@class (exact) render.md.image.Config: render.md.base.Config
 ---@field size string|number
 ---@field max_height integer
+---@field html boolean
 ---@field cache_dir string
 ---@field update_interval integer
 
@@ -1294,6 +1295,8 @@ M.image.default = {
     size = 'auto',
     -- Optional max height in cells when size is a number (ignored for 'auto').
     max_height = 40,
+    -- Also render HTML <img src="..."> tags inside markdown.
+    html = true,
     cache_dir = vim.fn.stdpath('cache') .. '/fk_markdown/images',
     update_interval = 100,
 }
@@ -1305,6 +1308,7 @@ function M.image.schema()
             union = { { type = 'string' }, { type = 'number' } },
         },
         max_height = { type = 'number' },
+        html = { type = 'boolean' },
         cache_dir = { type = 'string' },
         update_interval = { type = 'number' },
     })

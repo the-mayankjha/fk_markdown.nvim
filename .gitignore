@@ -1,5 +1,9 @@
 doc/tags
 *.gif
 test.md
-
+tests/
 /temp/
+fix_server.py
+math_test.md 
+feature
+.DS_Store

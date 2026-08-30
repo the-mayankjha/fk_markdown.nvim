@@ -38,12 +38,18 @@ local function text_width()
     return math.max(8, width - 2)
 end
 
-local function fit_cells(w, h, config)
+local function fit_cells(w, h, config, width_px)
     local cell_w, cell_h = kitty.get_cell_size()
-    local cols = math.max(1, math.ceil(w / cell_w))
-    local rows = math.max(1, math.ceil(h / cell_h))
+    local cols, rows
+    if width_px and width_px > 0 then
+        local scale = width_px / w
+        cols = math.max(1, math.ceil(width_px / cell_w))
+        rows = math.max(1, math.ceil((h * scale) / cell_h))
+    else
+        cols = math.max(1, math.ceil(w / cell_w))
+        rows = math.max(1, math.ceil(h / cell_h))
+    end
     local cap = kitty.max_placeholder_dim()
-    -- Keep native aspect; only shrink if the grid would wrap (wrap tiles the image).
     local max_cols = math.min(cap, text_width())
     if type(config.size) == 'number' then
         max_cols = math.min(max_cols, math.max(1, config.size))
@@ -70,9 +76,10 @@ end
 ---@param config render.md.image.Config
 ---@param node_id string
 ---@param callback fun(img: fk_markdown.image.Active|nil)
-function M.request(src, buf, config, node_id, callback)
+---@param width_px? integer
+function M.request(src, buf, config, node_id, callback, width_px)
     local existing = M.active[node_id]
-    if existing and existing.src == src then
+    if existing and existing.src == src and (existing.width_px or 0) == (width_px or 0) then
         M.errors[node_id] = nil
         vim.schedule(function()
             callback(existing)
@@ -121,7 +128,7 @@ function M.request(src, buf, config, node_id, callback)
                 callback(nil)
                 return
             end
-            local cols, rows = fit_cells(w, h, config)
+            local cols, rows = fit_cells(w, h, config, width_px)
             if M.active[node_id] then
                 kitty.delete_image(M.active[node_id].id)
                 M.active[node_id] = nil
@@ -132,6 +139,7 @@ function M.request(src, buf, config, node_id, callback)
                 id = id,
                 path = path,
                 src = src,
+                width_px = width_px,
                 cols = cols,
                 rows = rows,
             }

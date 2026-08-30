@@ -20,15 +20,34 @@ end
 
 ---@param path string
 ---@return string
-local function ext(path)
-    return (path:match('%.([%w]+)$') or ''):lower()
+local function sniff(path)
+    local f = io.open(path, 'rb')
+    if not f then
+        return ext(path)
+    end
+    local head = f:read(256) or ''
+    f:close()
+    if head:sub(1, 8) == '\x89PNG\r\n\x1a\n' then
+        return 'png'
+    end
+    if head:sub(1, 3) == '\xff\xd8\xff' then
+        return 'jpg'
+    end
+    if head:sub(1, 3) == 'GIF' then
+        return 'gif'
+    end
+    if head:find('<svg', 1, true) or head:find('<?xml', 1, true) then
+        return 'svg'
+    end
+    return ext(path)
 end
 
 ---@param src string
 ---@param out string
 ---@param callback fun(path: string|nil)
 local function convert_to_png(src, out, callback)
-    if ext(src) == 'png' then
+    local kind = sniff(src)
+    if kind == 'png' then
         vim.schedule(function()
             callback(src)
         end)
@@ -52,7 +71,7 @@ local function convert_to_png(src, out, callback)
         end)
     end
 
-    if ext(src) == 'svg' and vim.fn.executable('rsvg-convert') == 1 then
+    if kind == 'svg' and vim.fn.executable('rsvg-convert') == 1 then
         vim.system({ 'rsvg-convert', '-b', 'none', '-o', out, src }, {}, function(r)
             done(r.code == 0)
         end)
@@ -98,8 +117,7 @@ function M.to_png(dest, buf, cache_dir, callback)
 
     if src:match('^https?://') then
         local name = vim.fn.sha256(src):sub(1, 16)
-        local guessed = src:match('%.([%w]+)$') or 'bin'
-        local raw = cache_dir .. '/' .. name .. '.' .. guessed
+        local raw = cache_dir .. '/' .. name .. '.raw'
         local png = cache_dir .. '/' .. name .. '.png'
         if vim.fn.filereadable(png) == 1 and vim.fn.getfsize(png) > 32 then
             vim.schedule(function()

@@ -111,6 +111,78 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Ar
 .markdown-body pre { border-radius: 8px; }
 .markdown-body pre code.hljs { padding: 0; background: transparent; }
 @media (max-width: 767px) { .markdown-body { padding: 15px; } }
+
+/* GitHub Alert / Callout Styles */
+.markdown-alert {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    color: inherit;
+    border-left: 0.25em solid #30363d;
+    border-radius: 6px;
+    background-color: rgba(110, 118, 129, 0.05);
+}
+.markdown-alert > :first-child {
+    margin-top: 0;
+}
+.markdown-alert > :last-child {
+    margin-bottom: 0;
+}
+.markdown-alert .markdown-alert-title {
+    display: flex;
+    font-weight: 600;
+    align-items: center;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    gap: 8px;
+    font-size: 14px;
+}
+.markdown-alert .markdown-alert-title svg {
+    margin-right: 0;
+    vertical-align: text-bottom;
+}
+
+/* Alert Themes */
+.markdown-alert.markdown-alert-note {
+    border-left-color: #1f6feb;
+    background-color: rgba(31, 111, 235, 0.08);
+}
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+    color: #58a6ff;
+}
+
+.markdown-alert.markdown-alert-tip {
+    border-left-color: #238636;
+    background-color: rgba(35, 134, 54, 0.08);
+}
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+    color: #3fb950;
+}
+
+.markdown-alert.markdown-alert-important {
+    border-left-color: #8957e5;
+    background-color: rgba(137, 87, 229, 0.08);
+}
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+    color: #a371f7;
+}
+
+.markdown-alert.markdown-alert-warning {
+    border-left-color: #9e6a03;
+    background-color: rgba(158, 106, 3, 0.08);
+}
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+    color: #d29922;
+}
+
+.markdown-alert.markdown-alert-caution,
+.markdown-alert.markdown-alert-danger {
+    border-left-color: #da3633;
+    background-color: rgba(218, 54, 51, 0.08);
+}
+.markdown-alert.markdown-alert-caution .markdown-alert-title,
+.markdown-alert.markdown-alert-danger .markdown-alert-title {
+    color: #f85149;
+}
 %s
 </style>
 </head>
@@ -120,8 +192,58 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Ar
 const contentDiv = document.getElementById('content');
 const syntaxHighlightEnabled = %s;
 
+const alertIcons = {
+    note: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
+    tip: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.099-.115-.2-.23-.306-.35-.615-.718-1.29-1.583-1.29-2.929 0-2.88 2.327-5.25 5.5-5.25s5.5 2.37 5.5 5.25c0 1.346-.675 2.211-1.29 2.929-.106.12-.207.235-.306.35-.18.21-.36.425-.542.68-.207.3-.33.565-.37.847a.75.75 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5Zm1 2.5h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1 0-1.5Z"></path></svg>',
+    important: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>',
+    warning: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.396A1.75 1.75 0 0 1 14.082 15H1.918A1.75 1.75 0 0 1 .375 12.443Zm1.763.94a.25.25 0 0 0-.44 0L1.698 13.383a.25.25 0 0 0 .22.367h12.164a.25.25 0 0 0 .22-.367L8.22 1.987ZM8 5.5a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 8 5.5Zm0 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
+    caution: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>'
+};
+
+function processAlerts(container) {
+    container.querySelectorAll('blockquote').forEach((bq) => {
+        const firstP = bq.querySelector('p');
+        if (!firstP) return;
+        
+        const html = firstP.innerHTML.trim();
+        const match = html.match(/^\[!([a-zA-Z_-]+)\]/);
+        if (!match) return;
+        
+        const rawType = match[1].toLowerCase();
+        let alertType = rawType;
+        if (alertType === 'danger') alertType = 'caution';
+        if (alertType === 'info') alertType = 'note';
+        
+        const titleText = rawType.charAt(0).toUpperCase() + rawType.slice(1);
+        const icon = alertIcons[alertType] || alertIcons.note;
+        
+        // Remove [!TYPE] marker and optional leading break/whitespace
+        let remainingHtml = html.slice(match[0].length).replace(/^<br\s*\/?>\s*/i, '').trim();
+        if (remainingHtml) {
+            firstP.innerHTML = remainingHtml;
+        } else {
+            firstP.remove();
+        }
+        
+        const titleDiv = document.createElement('p');
+        titleDiv.className = 'markdown-alert-title';
+        titleDiv.innerHTML = icon + '<span>' + titleText + '</span>';
+        
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'markdown-alert markdown-alert-' + alertType;
+        alertDiv.appendChild(titleDiv);
+        
+        while (bq.firstChild) {
+            alertDiv.appendChild(bq.firstChild);
+        }
+        
+        bq.replaceWith(alertDiv);
+    });
+}
+
 function renderMarkdown(text) {
     contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(text));
+    processAlerts(contentDiv);
     if (syntaxHighlightEnabled && window.hljs) {
         contentDiv.querySelectorAll('pre code').forEach((block) => {
             try {

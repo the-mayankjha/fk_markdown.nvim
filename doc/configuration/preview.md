@@ -209,6 +209,31 @@ The preview server automatically resolves and serves local relative images (PNG,
 
 ---
 
+## 📢 GitHub-Style Callouts & Alerts
+
+The web preview natively renders all GitHub Flavored Markdown (GFM) callouts / alerts with official Octicon SVG icons, colored accent borders, and background tints:
+
+
+> [!NOTE]
+> Useful information that users should know, even when skimming.
+
+> [!TIP]
+> Helpful advice or quick recommendations.
+
+> [!IMPORTANT]
+> Key information required for success.
+
+> [!WARNING]
+> Urgent alerts demanding user attention.
+
+> [!CAUTION]
+> Advises about potential risks or destructive consequences.
+
+
+Supported alert types: `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`, and `DANGER`.
+
+---
+
 ## 📋 Option Reference
 
 | Option | Type | Default | Description |

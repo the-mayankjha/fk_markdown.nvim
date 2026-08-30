@@ -1,6 +1,13 @@
 # Change Log 
 ## Major and Minor Release
 
+## [1.3.2](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.3.1...v1.3.2) (2026-08-30)
+
+
+### Bug Fixes
+
+* supports html &lt;img&gt; rendering size and badges ([214696c](https://github.com/the-mayankjha/fk_markdown.nvim/commit/214696c78a28007718d5c06c2be6c7d0ecf07ede))
+
 ## [1.3.1](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.3.0...v1.3.1) (2026-08-30)
 
 

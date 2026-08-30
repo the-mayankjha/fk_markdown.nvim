@@ -3,12 +3,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/stargazers"><img src="https://img.shields.io/github/stars/the-mayankjha/fk_markdown.nvim?style=flat-square" alt="GitHub stars"/></a>
-  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/blob/main/LICENSE"><img src="https://img.shields.io/github/license/the-mayankjha/fk_markdown.nvim?style=flat-square" alt="License: MIT"/></a>
-  <img src="https://img.shields.io/badge/Neovim-0.9+-blueviolet.svg?style=flat-square&logo=neovim" alt="Neovim 0.9+"/>
-  <img src="https://img.shields.io/badge/Lua-blue.svg?style=flat-square&logo=lua" alt="Lua"/>
-  <a href="https://luarocks.org/modules/flashcodes-themayankjha/fk_markdown.nvim"><img src="https://img.shields.io/luarocks/v/flashcodes-themayankjha/fk_markdown.nvim?style=flat-square&logo=lua" alt="LuaRocks"/></a>
-  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/actions/workflows/release.yml"><img src="https://github.com/the-mayankjha/fk_markdown.nvim/actions/workflows/release.yml/badge.svg" alt="Release Pipeline"/></a>
+  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/releases"><img src="https://img.shields.io/github/v/release/the-mayankjha/fk_markdown.nvim?style=for-the-badge&logo=github" alt="GitHub Release"/></a>
+  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/stargazers"><img src="https://img.shields.io/github/stars/the-mayankjha/fk_markdown.nvim?style=for-the-badge&logo=github" alt="GitHub stars"/></a>
+  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/blob/main/LICENSE"><img src="https://img.shields.io/github/license/the-mayankjha/fk_markdown.nvim?style=for-the-badge" alt="License: MIT"/></a>
+  <img src="https://img.shields.io/badge/Neovim-0.9+-blueviolet.svg?style=for-the-badge&logo=neovim" alt="Neovim 0.9+"/>
+  <img src="https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua" alt="Lua"/>
+  <a href="https://luarocks.org/modules/flashcodes-themayankjha/fk_markdown.nvim"><img src="https://img.shields.io/luarocks/v/flashcodes-themayankjha/fk_markdown.nvim?style=for-the-badge&logo=lua&color=purple" alt="LuaRocks"/></a>
+  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/the-mayankjha/fk_markdown.nvim/release.yml?style=for-the-badge&logo=github-actions" alt="Release Pipeline"/></a>
 </p>
 
 

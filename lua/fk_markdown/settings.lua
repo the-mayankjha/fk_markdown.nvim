@@ -1277,10 +1277,18 @@ end
 ---@class render.md.image.Settings
 M.image = {}
 
+---@class (exact) render.md.image.size.Table
+---@field width integer|nil
+---@field height integer|nil
+
+---@class (exact) render.md.image.html.Config
+---@field image_rendering boolean
+---@field properties boolean
+
 ---@class (exact) render.md.image.Config: render.md.base.Config
----@field size string|number
+---@field size string|number|render.md.image.size.Table
 ---@field max_height integer
----@field html boolean
+---@field html render.md.image.html.Config
 ---@field cache_dir string
 ---@field update_interval integer
 
@@ -1292,11 +1300,17 @@ M.image.default = {
     -- 'auto' uses the image pixel size (cells = pixels / cell size).
     -- Wider-than-window images shrink so the placeholder grid does not wrap.
     -- A number is a maximum width in terminal cells.
+    -- A table { width = px, height = px } sets explicit pixel dimensions.
     size = 'auto',
     -- Optional max height in cells when size is a number (ignored for 'auto').
     max_height = 40,
-    -- Also render HTML <img src="..."> tags inside markdown.
-    html = true,
+    -- HTML <img> rendering options.
+    html = {
+        -- Render HTML <img src="..."> tags inside markdown.
+        image_rendering = true,
+        -- Honor HTML attributes (width, height, align) from <img> and parent tags.
+        properties = true,
+    },
     cache_dir = vim.fn.stdpath('cache') .. '/fk_markdown/images',
     update_interval = 100,
 }
@@ -1305,10 +1319,26 @@ M.image.default = {
 function M.image.schema()
     return M.base.schema({
         size = {
-            union = { { type = 'string' }, { type = 'number' } },
+            union = {
+                { type = 'string' },
+                { type = 'number' },
+                {
+                    type = 'table',
+                    fields = {
+                        width = { type = 'number', optional = true },
+                        height = { type = 'number', optional = true },
+                    },
+                },
+            },
         },
         max_height = { type = 'number' },
-        html = { type = 'boolean' },
+        html = {
+            type = 'table',
+            fields = {
+                image_rendering = { type = 'boolean' },
+                properties = { type = 'boolean' },
+            },
+        },
         cache_dir = { type = 'string' },
         update_interval = { type = 'number' },
     })

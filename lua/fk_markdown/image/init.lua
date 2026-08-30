@@ -94,8 +94,20 @@ end
 ---@param node render.md.Node
 function M.try_html(context, marks, node)
     local config = context.config.image
-    if not config or not config.enabled or config.html == false then
+    if not config or not config.enabled then
         return
+    end
+    local html_config = config.html
+    -- Support both old boolean config and new table config
+    if type(html_config) == 'boolean' then
+        if not html_config then
+            return
+        end
+        html_config = { image_rendering = true, properties = true }
+    elseif type(html_config) == 'table' then
+        if html_config.image_rendering == false then
+            return
+        end
     end
     if not kitty.is_supported() then
         return
@@ -105,14 +117,24 @@ function M.try_html(context, marks, node)
         return
     end
 
+    local honor_props = html_config and html_config.properties ~= false
+
     local grids = {}
     local ready = 0
+    local img_align = nil
+    local img_cols = 0
     for _, img in ipairs(imgs) do
+        local w_px = honor_props and img.width or nil
+        local h_px = honor_props and img.height or nil
+        if honor_props and img.align then
+            img_align = img.align
+        end
         local node_id = table.concat({
             tostring(node.start_row),
             tostring(img.start),
             img.src,
-            tostring(img.width or 0),
+            tostring(w_px or 0),
+            tostring(h_px or 0),
         }, '_')
         local err = state.errors[node_id]
         if err and err.src == img.src then
@@ -122,9 +144,10 @@ function M.try_html(context, marks, node)
         if not active or active.src ~= img.src then
             state.request(img.src, context.buf, config, node_id, function()
                 refresh(context)
-            end, img.width)
+            end, w_px, h_px)
         else
             ready = ready + 1
+            img_cols = active.cols
             local lines = kitty.build_virt_lines(active.id, active.rows, active.cols)
             for _, line in ipairs(lines) do
                 grids[#grids + 1] = line
@@ -135,6 +158,33 @@ function M.try_html(context, marks, node)
 
     if ready == 0 then
         return
+    end
+
+    -- Apply alignment padding to virtual lines
+    if honor_props and img_align and img_cols > 0 then
+        local win_width = vim.o.columns
+        local ok, win = pcall(vim.api.nvim_get_current_win)
+        if ok then
+            win_width = vim.api.nvim_win_get_width(win)
+            local info = vim.fn.getwininfo(win)
+            if info and info[1] and info[1].textoff then
+                win_width = win_width - info[1].textoff
+            end
+        end
+        local pad = 0
+        if img_align == 'center' then
+            pad = math.max(0, math.floor((win_width - img_cols) / 2))
+        elseif img_align == 'right' then
+            pad = math.max(0, win_width - img_cols)
+        end
+        -- left alignment is the default (pad = 0)
+        if pad > 0 then
+            local pad_str = string.rep(' ', pad)
+            for i, line in ipairs(grids) do
+                -- Prepend padding to the first element of each virtual line
+                grids[i] = vim.list_extend({ { pad_str, '' } }, line)
+            end
+        end
     end
 
     marks:add(config, false, node.start_row, node.start_col, {

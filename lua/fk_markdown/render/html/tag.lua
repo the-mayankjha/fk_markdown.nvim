@@ -17,8 +17,10 @@ function Render:run()
     local start_tag = self.node:child('start_tag')
     local end_tag = self.node:child('end_tag')
     local name = (start_tag and start_tag:child('tag_name')) or self.node:child('tag_name')
-    
-    if name and name.text:lower() == 'img' then
+
+    -- Check if this node IS an <img> or CONTAINS an <img> (e.g. <p align="center"><img .../></p>)
+    local tag_name = name and name.text:lower() or ''
+    if tag_name == 'img' or (self.node.text and self.node.text:lower():find('<img%s')) then
         require('fk_markdown.image').try_html(self.context, self.marks, self.node)
     end
     local config = name and self.config.tag[name.text]

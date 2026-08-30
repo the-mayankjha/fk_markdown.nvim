@@ -19,7 +19,6 @@ A lightweight Neovim plugin for rendering and customizing Markdown elements with
 - 🎯 **Treesitter integration** — Enhanced syntax highlighting for code blocks
 
 <div align="center" style="margin: 30px 0;">
-  <img alt="fk_markdown.nvim features showcase" width="80%" src="feature.png" />
 </div>
 
 ---

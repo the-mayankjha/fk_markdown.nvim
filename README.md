@@ -23,7 +23,6 @@
   </a>
 </p>
 
-# fk_markdown.nvim
 
 A lightweight and highly customizable Markdown rendering and live-preview plugin for Neovim.
 
@@ -140,7 +139,7 @@ The rest of this README is divided into two major sections:
 * [ Rendering](#-rendering)
 * [ Preview](#-preview)
 
----
+
 
 #  Rendering
 
@@ -170,7 +169,6 @@ The rendering system was initially inspired by and built with reference to the e
 | **Images**          | Styled image indicators                               |
 | **Inline Elements** | Custom highlighting and rendering behavior            |
 
----
 
 #  Headings
 

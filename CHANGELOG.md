@@ -1,6 +1,13 @@
 # Change Log 
 ## Major and Minor Release
 
+## [1.4.2](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.4.1...v1.4.2) (2026-08-30)
+
+
+### Bug Fixes
+
+* added support for plantuml in Preview ([a3d1627](https://github.com/the-mayankjha/fk_markdown.nvim/commit/a3d1627177f8988c41d7859269dc659e0c66dc73))
+
 ## [1.4.1](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.4.0...v1.4.1) (2026-08-30)
 
 

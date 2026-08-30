@@ -14,7 +14,8 @@
 - [x] Support html   `<img>` rendering.
 - [x] Syntax highlighting inside web preview.
 - [x] Latex rendering inside web preview.
-- [ ] Plant UML / Mermaid  rendering inside web preview.
+- [x] Plant UML rendering inside web preview and Neovim.
+- [ ] Mermaid rendering inside web preview.
 
 
 #### Minor Patches 

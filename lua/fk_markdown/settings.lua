@@ -2039,6 +2039,61 @@ M.preview = {}
 ---@field attribute? string
 ---@field border? string
 
+---@class render.md.plant_uml.Styling
+---@field background? string
+---@field border? boolean
+---@field font? string
+---@field dpi? integer
+---@field scale? number
+
+---@class (exact) render.md.plant_uml.Config
+---@field enabled boolean
+---@field server string
+---@field format string
+---@field render_method string
+---@field theme string
+---@field styling render.md.plant_uml.Styling
+---@field cache_dir? string
+---@field hide_on_insert? boolean
+---@field local_cmd? string
+
+---@class render.md.plant_uml.Settings
+M.plant_uml = {}
+
+---@type render.md.plant_uml.Config
+M.plant_uml.default = {
+    enabled = true,
+    render_modes = true,
+    server = 'https://www.plantuml.com/plantuml',
+    format = 'png',
+    render_method = 'image',
+    theme = 'default',
+    hide_on_insert = true,
+    styling = {
+        background = 'transparent',
+        border = true,
+        font = nil,
+        dpi = 150,
+        scale = 1.0,
+    },
+    cache_dir = vim.fn.stdpath('cache') .. '/fk_markdown/plantuml',
+    local_cmd = nil,
+}
+
+---@return render.md.Schema
+function M.plant_uml.schema()
+    return M.base.schema({
+        server = { type = 'string' },
+        format = { type = 'string' },
+        render_method = { type = 'string' },
+        theme = { type = 'string' },
+        hide_on_insert = { type = 'boolean' },
+        styling = { type = 'table' },
+        cache_dir = { type = 'string' },
+        local_cmd = { type = 'string' },
+    })
+end
+
 ---@class (exact) render.md.preview.syntax.Config
 ---@field enabled boolean
 ---@field theme string
@@ -2047,6 +2102,13 @@ M.preview = {}
 ---@class (exact) render.md.preview.latex.Config
 ---@field enabled boolean
 ---@field code_blocks boolean
+
+---@class (exact) render.md.preview.plant_uml.Config
+---@field enabled boolean
+---@field server string
+---@field format string
+---@field theme string
+---@field styling render.md.plant_uml.Styling
 
 ---@class (exact) render.md.preview.Config
 ---@field enabled boolean
@@ -2060,6 +2122,7 @@ M.preview = {}
 ---@field theme string
 ---@field syntax_highlight render.md.preview.syntax.Config
 ---@field latex render.md.preview.latex.Config
+---@field plant_uml render.md.preview.plant_uml.Config
 ---@field keymap table<string, string|boolean>
 
 ---@type render.md.preview.Config
@@ -2088,6 +2151,23 @@ M.preview.default = {
         enabled = true,
         -- Render ```math / ```latex code blocks as math formulas
         code_blocks = true,
+    },
+    -- Web preview PlantUML diagram rendering configuration
+    plant_uml = {
+        -- Enable PlantUML diagram rendering in web preview
+        enabled = true,
+        -- PlantUML server base URL
+        server = "https://www.plantuml.com/plantuml",
+        -- Render format: "svg" or "png" (default: "svg")
+        format = "svg",
+        -- Theme: "default", "plain", "catppuccin", etc.
+        theme = "default",
+        -- Diagram styling options
+        styling = {
+            background = "transparent",
+            border = true,
+            scale = 1.0,
+        },
     },
     keymap = {
         start = false,

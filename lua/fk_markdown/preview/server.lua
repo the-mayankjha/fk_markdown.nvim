@@ -113,6 +113,24 @@ function M:get_html()
         and '<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>\n<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>'
         or ''
 
+    local puml_conf = preview_conf.plant_uml or preview_conf['plant-uml'] or preview_conf.plantuml or preview_conf.puml
+    local puml_enabled = true
+    local puml_server = 'https://www.plantuml.com/plantuml'
+    local puml_format = 'svg'
+    local puml_theme = 'default'
+    if type(puml_conf) == 'boolean' then
+        puml_enabled = puml_conf
+    elseif type(puml_conf) == 'table' then
+        if puml_conf.enabled ~= nil then puml_enabled = puml_conf.enabled end
+        if puml_conf.server ~= nil then puml_server = puml_conf.server end
+        if puml_conf.format ~= nil then puml_format = puml_conf.format end
+        if puml_conf.theme ~= nil then puml_theme = puml_conf.theme end
+    end
+
+    local puml_script = puml_enabled
+        and '<script src="https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/dist/plantuml-encoder.min.js"></script>'
+        or ''
+
     return string.format([[<!DOCTYPE html>
 <html>
 <head>
@@ -125,12 +143,15 @@ function M:get_html()
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.3/purify.min.js"></script>
 %s
 %s
+%s
 <style>
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; background-color: %s; }
 .markdown-body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 0 auto; padding: 45px; }
 .markdown-body pre { border-radius: 8px; }
 .markdown-body pre code.hljs { padding: 0; background: transparent; }
 .katex-display-block { margin: 1.2em 0; overflow-x: auto; text-align: center; }
+.plantuml-diagram-container { display: flex; justify-content: center; margin: 1.5em 0; overflow-x: auto; padding: 8px; border-radius: 8px; }
+.plantuml-diagram { max-width: 100%%; height: auto; border-radius: 6px; }
 @media (max-width: 767px) { .markdown-body { padding: 15px; } }
 
 /* GitHub Alert / Callout Styles */
@@ -214,6 +235,10 @@ const contentDiv = document.getElementById('content');
 const syntaxHighlightEnabled = %s;
 const latexEnabled = %s;
 const latexCodeBlocks = %s;
+const plantUmlEnabled = %s;
+const plantUmlServer = %s;
+const plantUmlFormat = %s;
+const plantUmlTheme = %s;
 
 const alertIcons = {
     note: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
@@ -264,9 +289,55 @@ function processAlerts(container) {
     });
 }
 
+function renderPlantUML(container) {
+    if (!plantUmlEnabled || !window.plantumlEncoder) return;
+    container.querySelectorAll('pre code.language-plantuml, pre code.language-puml, pre code.language-plant-uml, pre code.language-plant_uml').forEach((block) => {
+        try {
+            let code = block.textContent.trim();
+            if (!code) return;
+            
+            let prefix = '';
+            if (plantUmlTheme && plantUmlTheme !== 'default' && plantUmlTheme !== '') {
+                prefix += '!theme ' + plantUmlTheme + '\n';
+            }
+            
+            if (!code.startsWith('@start')) {
+                code = '@startuml\n' + prefix + code;
+            } else if (prefix) {
+                const firstNl = code.indexOf('\n');
+                if (firstNl !== -1) {
+                    code = code.slice(0, firstNl + 1) + prefix + code.slice(firstNl + 1);
+                }
+            }
+            if (!code.includes('@end')) {
+                code = code + '\n@enduml';
+            }
+
+            const encoded = window.plantumlEncoder.encode(code);
+            const baseUrl = plantUmlServer.replace(/\/+$/, '');
+            const imgUrl = baseUrl + '/' + plantUmlFormat + '/' + encoded;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'plantuml-diagram-container';
+            
+            const img = document.createElement('img');
+            img.className = 'plantuml-diagram';
+            img.src = imgUrl;
+            img.alt = 'PlantUML Diagram';
+            img.loading = 'lazy';
+            
+            wrapper.appendChild(img);
+            block.closest('pre').replaceWith(wrapper);
+        } catch (e) {
+            console.error("PlantUML preview error:", e);
+        }
+    });
+}
+
 function renderMarkdown(text) {
     contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(text));
     processAlerts(contentDiv);
+    renderPlantUML(contentDiv);
     if (latexEnabled) {
         if (latexCodeBlocks && window.katex) {
             contentDiv.querySelectorAll('pre code.language-math, pre code.language-latex, pre code.language-tex').forEach((block) => {
@@ -338,11 +409,16 @@ es.onmessage = function(e) {
         katex_link,
         hljs_script,
         katex_scripts,
+        puml_script,
         body_bg,
         custom_css_str,
         tostring(highlight_enabled),
         tostring(latex_enabled),
-        tostring(latex_code_blocks)
+        tostring(latex_code_blocks),
+        tostring(puml_enabled),
+        vim.json.encode(puml_server),
+        vim.json.encode(puml_format),
+        vim.json.encode(puml_theme)
     )
 end
 

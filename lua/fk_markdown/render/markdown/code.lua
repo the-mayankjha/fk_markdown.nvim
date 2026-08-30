@@ -95,6 +95,14 @@ function Render:run()
     local above = self.node:child('fenced_code_block_delimiter', start_row)
     local below = self.node:child('fenced_code_block_delimiter', end_row)
 
+    -- Check if PlantUML diagram rendering should handle this block
+    local language = self.data.language
+    if language and require('fk_markdown.plantuml').is_plantuml(language.text) then
+        if require('fk_markdown.plantuml').render(self.context, self.marks, self.node, language.text) then
+            return
+        end
+    end
+
     if self.config.conceal_delimiters then
         self.marks:over(self.config, true, self.data.info, { conceal = '' })
         self.marks:over(self.config, true, above, { conceal = '' })

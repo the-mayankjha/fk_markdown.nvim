@@ -309,6 +309,32 @@ local function translate_opts(user_opts)
                 end
             end
         end
+
+        -- PlantUML diagram rendering in preview
+        local pv_puml = pv.plant_uml or pv['plant-uml'] or pv.plantuml or pv.puml
+        if pv_puml ~= nil then
+            rm_opts.preview.plant_uml = rm_opts.preview.plant_uml or {}
+            if type(pv_puml) == 'boolean' then
+                rm_opts.preview.plant_uml.enabled = pv_puml
+            elseif type(pv_puml) == 'table' then
+                for k, v in pairs(pv_puml) do
+                    rm_opts.preview.plant_uml[k] = v
+                end
+            end
+        end
+    end
+
+    -- ── PlantUML ────────────────────────────────────────────────
+    local puml_conf = user_opts.plant_uml or user_opts['plant-uml'] or user_opts.plantuml or user_opts.puml
+    if puml_conf ~= nil then
+        rm_opts.plant_uml = rm_opts.plant_uml or {}
+        if type(puml_conf) == 'boolean' then
+            rm_opts.plant_uml.enabled = puml_conf
+        elseif type(puml_conf) == 'table' then
+            for k, v in pairs(puml_conf) do
+                rm_opts.plant_uml[k] = v
+            end
+        end
     end
 
     return rm_opts

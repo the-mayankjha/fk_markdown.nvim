@@ -244,6 +244,9 @@ function M.is_supported()
     if vim.env.KITTY_WINDOW_ID and vim.env.KITTY_WINDOW_ID ~= '' then
         return true
     end
+    if vim.env.GHOSTTY_RESOURCES_DIR and vim.env.GHOSTTY_RESOURCES_DIR ~= '' then
+        return true
+    end
     local term = vim.env.TERM or ''
     local term_program = (vim.env.TERM_PROGRAM or ''):lower()
     if term:find('xterm%-kitty', 1, false) or term_program:find('kitty', 1, true) then

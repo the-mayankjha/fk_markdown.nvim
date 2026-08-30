@@ -271,6 +271,29 @@ Supported alert types: `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`, and `DA
 
 ---
 
+## 📊 PlantUML Diagram Rendering
+
+The web preview automatically detects and renders all PlantUML code blocks (` ```plantuml `, ` ```puml `, ` ```plant-uml `) as responsive diagrams:
+
+```lua
+require('fk_markdown').setup({
+    preview = {
+        plant_uml = {
+            enabled = true,
+            server = "https://www.plantuml.com/plantuml",
+            format = "svg", -- "svg" or "png"
+            theme = "default",
+            styling = {
+                background = "transparent",
+                scale = 1.0,
+            },
+        },
+    },
+})
+```
+
+---
+
 ## 📋 Option Reference
 
 | Option | Type | Default | Description |
@@ -289,6 +312,10 @@ Supported alert types: `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`, and `DA
 | `syntax_highlight.colors` | `table` | `{}` | Custom token color overrides (hex / hl group) |
 | `latex.enabled` | `boolean` | `true` | Enable KaTeX LaTeX math rendering |
 | `latex.code_blocks` | `boolean` | `true` | Render ```math and ```latex code blocks as math |
+| `plant_uml.enabled` | `boolean` | `true` | Enable PlantUML diagram rendering in preview |
+| `plant_uml.server` | `string` | `"https://www.plantuml.com/plantuml"` | PlantUML server endpoint |
+| `plant_uml.format` | `string` | `"svg"` | Diagram format (`"svg"` or `"png"`) |
+| `plant_uml.theme` | `string` | `"default"` | PlantUML theme name |
 | `keymap.start` | `string\|false` | `false` | Normal mode keymap to start preview |
 | `keymap.stop` | `string\|false` | `false` | Normal mode keymap to stop preview |
 | `keymap.toggle` | `string\|false` | `false` | Normal mode keymap to toggle preview |

@@ -512,6 +512,7 @@ For detailed configuration of individual elements, see:
 - **[Table Configuration](doc/configuration/table.md)** — Presets, cell modes, padding, and border characters
 - **[Codeblock Configuration](doc/configuration/codeblock.md)** — Borders, backgrounds, padding, titles, and DevIcon colors
 - **[Callout Configuration](doc/configuration/callout.md)** — Boxy/compact styles, accent bars, and callout types
+- **[PlantUML Diagram Configuration](doc/configuration/plantuml.md)** — In-buffer Kitty graphics protocol and preview diagram rendering
 - **[Web Preview Configuration](doc/configuration/preview.md)** — Synchronized auto-scroll, Highlight.js themes, custom color palettes, and server settings
 - **[General Configuration](doc/configuration.md)** — Bullets, checkboxes, links, dashes, and plugin settings
 
@@ -580,6 +581,7 @@ For complete preview documentation and color options, see **[Web Preview Configu
 - 📜 **Synchronized Auto-Scroll**: Follows your Neovim cursor position in real-time.
 - 🎨 **Syntax Highlighting**: Supports Highlight.js themes and full custom color palette overrides.
 - 📐 **LaTeX & Math (KaTeX)**: Renders inline math `$..$`, display math `$$..$$`, and ` ```math ` / ` ```latex ` code blocks.
+- 📊 **PlantUML Diagrams**: Renders ` ```plantuml ` code blocks as responsive SVG/PNG diagrams.
 - 📢 **GitHub Callouts / Alerts**: Renders `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, and `[!CAUTION]` with Octicon SVG icons and matching accent styles.
 - 🖼️ **Local Images**: Correctly resolves and serves local image files relative to the Markdown document.
 

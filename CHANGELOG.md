@@ -1,6 +1,13 @@
 # Change Log 
 ## Major and Minor Release
 
+## [1.2.0](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.1.0...v1.2.0) (2026-08-30)
+
+
+### Features
+
+* added luarocks and git action ([4ff3b1d](https://github.com/the-mayankjha/fk_markdown.nvim/commit/4ff3b1da5253bae6a3071bc38d204142be1da39a))
+
 ## [1.1.0](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.0.0...v1.1.0) (2026-08-30)
 
 

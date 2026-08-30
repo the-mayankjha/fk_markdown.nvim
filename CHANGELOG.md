@@ -1,6 +1,13 @@
 # Change Log 
 ## Major and Minor Release
 
+## [1.4.0](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.3.2...v1.4.0) (2026-08-30)
+
+
+### Features
+
+* **preview:** add syntax highlighting and custom color options for web preview ([a58a69e](https://github.com/the-mayankjha/fk_markdown.nvim/commit/a58a69e81efa2b3b875b162db019c7ebbdfa5cd8))
+
 ## [1.3.2](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.3.1...v1.3.2) (2026-08-30)
 
 

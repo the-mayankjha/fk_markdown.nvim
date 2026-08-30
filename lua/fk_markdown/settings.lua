@@ -2014,22 +2014,73 @@ function M.yaml.schema()
 end
 
 
-M.preview = {
-    default = {
+---@class render.md.preview.Settings
+M.preview = {}
+
+---@class (exact) render.md.preview.syntax.Colors
+---@field background? string
+---@field bg? string
+---@field text? string
+---@field fg? string
+---@field keyword? string
+---@field string? string
+---@field number? string
+---@field comment? string
+---@field function_name? string
+---@field func? string
+---@field title? string
+---@field variable? string
+---@field var? string
+---@field constant? string
+---@field operator? string
+---@field builtin? string
+---@field type? string
+---@field tag? string
+---@field attribute? string
+---@field border? string
+
+---@class (exact) render.md.preview.syntax.Config
+---@field enabled boolean
+---@field theme string
+---@field colors render.md.preview.syntax.Colors
+
+---@class (exact) render.md.preview.Config
+---@field enabled boolean
+---@field auto_start boolean
+---@field auto_close boolean
+---@field auto_scroll boolean
+---@field browser string
+---@field browser_func? fun(url: string)
+---@field port? integer
+---@field open_ip string
+---@field theme string
+---@field syntax_highlight render.md.preview.syntax.Config
+---@field keymap table<string, string|boolean>
+
+---@type render.md.preview.Config
+M.preview.default = {
+    enabled = true,
+    auto_start = false,
+    auto_close = true,
+    auto_scroll = true,
+    browser = "",
+    browser_func = nil,
+    port = nil,
+    open_ip = "127.0.0.1",
+    theme = "dark",
+    -- Web preview codeblock syntax highlighting configuration
+    syntax_highlight = {
+        -- Enable syntax highlighting in web preview
         enabled = true,
-        auto_start = false,
-        auto_close = true,
-        auto_scroll = true,
-        browser = "",
-        browser_func = nil,
-        port = nil,
-        open_ip = "127.0.0.1",
-        theme = "dark",
-        keymap = {
-            start = false,
-            stop = false,
-            toggle = false,
-        },
+        -- Highlight.js theme (e.g. 'github-dark', 'atom-one-dark', 'monokai', 'tokyo-night-dark', 'dracula', 'nord', etc.)
+        theme = "github-dark",
+        -- Custom syntax color overrides (hex colors like '#f38ba8' or Neovim highlight group names)
+        colors = {},
+    },
+    keymap = {
+        start = false,
+        stop = false,
+        toggle = false,
     },
 }
 

@@ -12,7 +12,7 @@
 - [x] Support local image rendering.
 - [x] Support cloud image rendering.
 - [x] Support html   `<img>` rendering.
-- [ ] Syntax highlighting inside web preview.
+- [x] Syntax highlighting inside web preview.
 - [ ] Latex rendering inside web preview.
 - [ ] Plant UML / Mermaid  rendering inside web preview.
 

@@ -7,6 +7,7 @@ Specific elements have detailed documentation:
 -  [Codeblock Configuration](file:///Users/mayankjha/fk_markdown.nvim/doc/configuration/codeblock.md)
 -  [Table Configuration](file:///Users/mayankjha/fk_markdown.nvim/doc/configuration/table.md)
 - 󰋽 [Callout & Quote Configuration](file:///Users/mayankjha/fk_markdown.nvim/doc/configuration/callout.md)
+- 󰖟 [Web Preview Configuration](file:///Users/mayankjha/fk_markdown.nvim/doc/preview.md)
 
 ---
 

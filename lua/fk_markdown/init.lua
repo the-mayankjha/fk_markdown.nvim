@@ -251,6 +251,51 @@ local function translate_opts(user_opts)
         rm_opts.quote.icon       = qt.icon or '▋'
     end
 
+    -- ── Web Preview ─────────────────────────────────────────────
+    if user_opts.preview then
+        local pv = user_opts.preview
+        rm_opts.preview = type(rm_opts.preview) == 'table' and rm_opts.preview or {}
+
+        -- Handle shorthand boolean syntax_highlight = true | false
+        if pv.syntax_highlight == false or pv.syntax == false or pv.highlight == false or pv.code_highlight == false then
+            rm_opts.preview.syntax_highlight = { enabled = false }
+        elseif pv.syntax_highlight == true or pv.syntax == true or pv.highlight == true or pv.code_highlight == true then
+            rm_opts.preview.syntax_highlight = { enabled = true }
+        end
+
+        local syn = type(pv.syntax_highlight) == 'table' and pv.syntax_highlight
+            or (type(pv.syntax) == 'table' and pv.syntax)
+            or (type(pv.highlight) == 'table' and pv.highlight)
+            or (type(pv.code) == 'table' and pv.code)
+
+        if syn then
+            rm_opts.preview.syntax_highlight = rm_opts.preview.syntax_highlight or {}
+            if syn.enabled ~= nil then
+                rm_opts.preview.syntax_highlight.enabled = syn.enabled
+            end
+            if syn.theme ~= nil then
+                rm_opts.preview.syntax_highlight.theme = syn.theme
+            end
+            if syn.colors ~= nil and type(syn.colors) == 'table' then
+                rm_opts.preview.syntax_highlight.colors = {}
+                for k, v in pairs(syn.colors) do
+                    local is_bg = k == 'background' or k == 'bg'
+                    rm_opts.preview.syntax_highlight.colors[k] = resolve_color(v, is_bg)
+                end
+            end
+        end
+
+        -- Direct colors table under preview: preview = { colors = { ... } }
+        if pv.colors and type(pv.colors) == 'table' then
+            rm_opts.preview.syntax_highlight = rm_opts.preview.syntax_highlight or {}
+            rm_opts.preview.syntax_highlight.colors = rm_opts.preview.syntax_highlight.colors or {}
+            for k, v in pairs(pv.colors) do
+                local is_bg = k == 'background' or k == 'bg'
+                rm_opts.preview.syntax_highlight.colors[k] = resolve_color(v, is_bg)
+            end
+        end
+    end
+
     return rm_opts
 end
     -- This handles discrepancies in initialization order of different plugin managers, some

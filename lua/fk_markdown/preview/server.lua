@@ -13,30 +13,131 @@ function M.new(buf)
     return self
 end
 
-local html_template = [[
-<!DOCTYPE html>
+function M:get_html()
+    local state = require('fk_markdown.state')
+    local preview_conf = (state.config and state.config.preview) or {}
+    local theme = preview_conf.theme or "dark"
+    local is_dark = theme ~= "light"
+
+    local syn = preview_conf.syntax_highlight or preview_conf.syntax or preview_conf.code or preview_conf.highlight or {}
+    local highlight_enabled = true
+    if type(syn) == 'boolean' then
+        highlight_enabled = syn
+        syn = {}
+    elseif type(syn) == 'table' and syn.enabled ~= nil then
+        highlight_enabled = syn.enabled
+    end
+
+    local hljs_theme = (type(syn) == 'table' and syn.theme) or (is_dark and "github-dark" or "github")
+    local custom_colors = (type(syn) == 'table' and syn.colors) or {}
+
+    local markdown_css = is_dark
+        and "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-dark.min.css"
+        or "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css"
+
+    local body_bg = is_dark and "#0d1117" or "#ffffff"
+
+    -- Build custom syntax color CSS overrides
+    local custom_css_rules = {}
+    if highlight_enabled and type(custom_colors) == 'table' and not vim.tbl_isempty(custom_colors) then
+        local bg = custom_colors.background or custom_colors.bg
+        local fg = custom_colors.text or custom_colors.fg
+        if bg or fg then
+            local pre_rule = "pre, code, .markdown-body pre, .markdown-body pre code, .hljs {"
+            if bg then pre_rule = pre_rule .. " background-color: " .. bg .. " !important;" end
+            if fg then pre_rule = pre_rule .. " color: " .. fg .. " !important;" end
+            pre_rule = pre_rule .. " }"
+            table.insert(custom_css_rules, pre_rule)
+        end
+
+        local border = custom_colors.border or custom_colors.border_color
+        if border then
+            table.insert(custom_css_rules, ".markdown-body pre { border: 1px solid " .. border .. " !important; }")
+        end
+
+        local selector_map = {
+            keyword = ".hljs-keyword, .hljs-selector-tag, .hljs-subst",
+            string = ".hljs-string, .hljs-doctag",
+            number = ".hljs-number, .hljs-literal",
+            comment = ".hljs-comment, .hljs-quote, .hljs-meta",
+            function_name = ".hljs-title.function_, .hljs-function .hljs-title",
+            func = ".hljs-title.function_, .hljs-function .hljs-title",
+            title = ".hljs-title, .hljs-title.class_, .hljs-title.function_",
+            variable = ".hljs-variable, .hljs-template-variable",
+            var = ".hljs-variable, .hljs-template-variable",
+            constant = ".hljs-variable.constant_, .hljs-symbol",
+            operator = ".hljs-operator, .hljs-punctuation",
+            builtin = ".hljs-built_in, .hljs-builtin-name",
+            built_in = ".hljs-built_in, .hljs-builtin-name",
+            type = ".hljs-type",
+            tag = ".hljs-tag, .hljs-name",
+            attribute = ".hljs-attribute, .hljs-attr",
+            attr = ".hljs-attribute, .hljs-attr",
+            parameter = ".hljs-params",
+            params = ".hljs-params",
+        }
+
+        for key, sel in pairs(selector_map) do
+            local col = custom_colors[key]
+            if col and col ~= 'NONE' and col ~= '' then
+                table.insert(custom_css_rules, sel .. " { color: " .. col .. " !important; }")
+            end
+        end
+    end
+
+    local custom_css_str = #custom_css_rules > 0 and ("\n" .. table.concat(custom_css_rules, "\n") .. "\n") or ""
+
+    local hljs_link = highlight_enabled
+        and string.format('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/%s.min.css">', hljs_theme)
+        or ''
+
+    local hljs_script = highlight_enabled
+        and '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>'
+        or ''
+
+    return string.format([[<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <title>fk_markdown preview</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-dark.min.css">
+<link rel="stylesheet" href="%s">
+%s
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.3/purify.min.js"></script>
+%s
 <style>
-body { font-family: sans-serif; padding: 20px; max-width: 900px; margin: auto; background-color: #0d1117; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; background-color: %s; }
 .markdown-body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 0 auto; padding: 45px; }
+.markdown-body pre { border-radius: 8px; }
+.markdown-body pre code.hljs { padding: 0; background: transparent; }
 @media (max-width: 767px) { .markdown-body { padding: 15px; } }
+%s
 </style>
 </head>
 <body>
 <article class="markdown-body" id="content"></article>
 <script>
 const contentDiv = document.getElementById('content');
+const syntaxHighlightEnabled = %s;
+
+function renderMarkdown(text) {
+    contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(text));
+    if (syntaxHighlightEnabled && window.hljs) {
+        contentDiv.querySelectorAll('pre code').forEach((block) => {
+            try {
+                hljs.highlightElement(block);
+            } catch (e) {
+                console.error("Syntax highlight error:", e);
+            }
+        });
+    }
+}
+
 const es = new EventSource('/events');
 es.onmessage = function(e) {
     const payload = JSON.parse(e.data);
     if (payload.type === 'update') {
-        contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(payload.text));
+        renderMarkdown(payload.text);
         if (payload.auto_scroll && payload.total_lines > 0) {
             const percent = (payload.line - 1) / (payload.total_lines > 1 ? payload.total_lines - 1 : 1);
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -56,8 +157,15 @@ es.onmessage = function(e) {
 };
 </script>
 </body>
-</html>
-]]
+</html>]],
+        markdown_css,
+        hljs_link,
+        hljs_script,
+        body_bg,
+        custom_css_str,
+        tostring(highlight_enabled)
+    )
+end
 
 function M:start()
     self.tcp = uv.new_tcp()
@@ -80,7 +188,7 @@ function M:start()
             local method, path = chunk:match("^(%u+)%s+(%S+)")
             if method == "GET" then
                 if path == "/" then
-                    local body = html_template
+                    local body = self:get_html()
                     local resp = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " .. #body .. "\r\nConnection: close\r\n\r\n" .. body
                     client:write(resp, function() client:close() end)
                 elseif path == "/events" then

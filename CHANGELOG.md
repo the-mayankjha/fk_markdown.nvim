@@ -1,6 +1,13 @@
 # Change Log 
 ## Major and Minor Release
 
+## [1.2.1](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.2.0...v1.2.1) (2026-08-30)
+
+
+### Bug Fixes
+
+* cloud image rendering ([0fe3d8c](https://github.com/the-mayankjha/fk_markdown.nvim/commit/0fe3d8c67037a5abe3b580eb55b3d2714f7d5454))
+
 ## [1.2.0](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.1.0...v1.2.0) (2026-08-30)
 
 

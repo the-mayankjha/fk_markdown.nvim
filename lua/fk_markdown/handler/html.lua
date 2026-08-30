@@ -12,6 +12,7 @@ function M.parse(ctx)
     local query = ts.parse('html', [[
         (comment) @comment
         (element) @tag
+        (self_closing_tag) @tag
     ]])
     ---@type table<string, render.md.Render>
     local renders = {

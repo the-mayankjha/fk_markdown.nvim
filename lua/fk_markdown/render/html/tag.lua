@@ -16,7 +16,11 @@ end
 function Render:run()
     local start_tag = self.node:child('start_tag')
     local end_tag = self.node:child('end_tag')
-    local name = start_tag and start_tag:child('tag_name')
+    local name = (start_tag and start_tag:child('tag_name')) or self.node:child('tag_name')
+    
+    if name and name.text:lower() == 'img' then
+        require('fk_markdown.image').try_html(self.context, self.marks, self.node)
+    end
     local config = name and self.config.tag[name.text]
     if not config then
         return

@@ -1,6 +1,13 @@
 # Change Log 
 ## Major and Minor Release
 
+## [1.3.0](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.2.1...v1.3.0) (2026-08-30)
+
+
+### Features
+
+* supports html &lt;img&gt; rendering ([f4e4068](https://github.com/the-mayankjha/fk_markdown.nvim/commit/f4e40683aec84046434fdbebccaedd5de4b0154f))
+
 ## [1.2.1](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.2.0...v1.2.1) (2026-08-30)
 
 

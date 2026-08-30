@@ -5,8 +5,11 @@
     <a href="https://github.com/the-mayankjha/fk_markdown.nvim/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/the-mayankjha/fk_markdown.nvim"/></a>
     <img alt="Neovim 0.9+" src="https://img.shields.io/badge/Neovim-0.9%2B-43f0ad?logo=neovim&logoColor=white"/>
     <img alt="Lua" src="https://img.shields.io/badge/Lua-Lua-2b7489?logo=lua&logoColor=white"/>
-  </p>
+    <a href="https://luarocks.org"><img alt="LuaRocks" src="https://shields.io"/></a>
+    <a href="https://github.com"><img alt="Release Pipeline" src="https://github.com/workflows/release.yml/badge.svg"/></a>
+ </p>
 </div>
+
 
 A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, lists, and more.
 

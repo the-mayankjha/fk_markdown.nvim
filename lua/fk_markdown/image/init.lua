@@ -89,6 +89,9 @@ function M.try_render(context, marks, node)
 end
 
 ---Render every <img> inside an HTML block or inline HTML tag.
+---When multiple small images (badges) appear in the same container, they are
+---laid out horizontally on the same virtual-line row, wrapping when the total
+---width would exceed the terminal window — just like GitHub renders badges.
 ---@param context render.md.request.Context
 ---@param marks render.md.Marks
 ---@param node render.md.Node
@@ -119,10 +122,14 @@ function M.try_html(context, marks, node)
 
     local honor_props = html_config and html_config.properties ~= false
 
-    local grids = {}
-    local ready = 0
+    -- Collect ready image info
+    ---@class fk_markdown.image.ReadyImg
+    ---@field active fk_markdown.image.Active
+    ---@field align string|nil
+    local ready_imgs = {}
+    local all_ready = true
     local img_align = nil
-    local img_cols = 0
+
     for _, img in ipairs(imgs) do
         local w_px = honor_props and img.width or nil
         local h_px = honor_props and img.height or nil
@@ -145,43 +152,130 @@ function M.try_html(context, marks, node)
             state.request(img.src, context.buf, config, node_id, function()
                 refresh(context)
             end, w_px, h_px)
+            all_ready = false
         else
-            ready = ready + 1
-            img_cols = active.cols
-            local lines = kitty.build_virt_lines(active.id, active.rows, active.cols)
-            for _, line in ipairs(lines) do
-                grids[#grids + 1] = line
-            end
+            ready_imgs[#ready_imgs + 1] = {
+                active = active,
+                align = img.align,
+            }
         end
         ::continue::
     end
 
-    if ready == 0 then
+    if #ready_imgs == 0 then
         return
     end
 
-    -- Apply alignment padding to virtual lines
-    if honor_props and img_align and img_cols > 0 then
-        local win_width = vim.o.columns
-        local ok, win = pcall(vim.api.nvim_get_current_win)
-        if ok then
-            win_width = vim.api.nvim_win_get_width(win)
-            local info = vim.fn.getwininfo(win)
-            if info and info[1] and info[1].textoff then
-                win_width = win_width - info[1].textoff
+    -- Compute available window width
+    local win_width = vim.o.columns
+    local ok, win = pcall(vim.api.nvim_get_current_win)
+    if ok then
+        win_width = vim.api.nvim_win_get_width(win)
+        local info = vim.fn.getwininfo(win)
+        if info and info[1] and info[1].textoff then
+            win_width = win_width - info[1].textoff
+        end
+    end
+    win_width = math.max(8, win_width - 2)
+
+    -- Determine if we should use inline (horizontal) layout.
+    -- Badge images are small (typically 1-3 rows tall). If ALL ready images
+    -- are short, lay them out horizontally; otherwise stack vertically.
+    local BADGE_MAX_ROWS = 4
+    local GAP_COLS = 1
+    local is_inline = #ready_imgs > 1
+    if is_inline then
+        for _, ri in ipairs(ready_imgs) do
+            if ri.active.rows > BADGE_MAX_ROWS then
+                is_inline = false
+                break
             end
         end
+    end
+
+    local grids = {}
+    local total_cols = 0
+
+    if is_inline then
+        -- Horizontal badge layout with wrapping
+        -- Group images into rows that fit within win_width
+        local rows_of_imgs = { {} }
+        local current_row_width = 0
+
+        for _, ri in ipairs(ready_imgs) do
+            local needed = ri.active.cols
+            if current_row_width > 0 then
+                needed = needed + GAP_COLS
+            end
+            if current_row_width + needed > win_width and current_row_width > 0 then
+                -- Wrap to new row
+                rows_of_imgs[#rows_of_imgs + 1] = { ri }
+                current_row_width = ri.active.cols
+            else
+                rows_of_imgs[#rows_of_imgs][#rows_of_imgs[#rows_of_imgs] + 1] = ri
+                current_row_width = current_row_width + needed
+            end
+        end
+
+        -- Build virtual lines for each row of badges
+        for _, row_imgs in ipairs(rows_of_imgs) do
+            -- Find max height (rows) in this badge row
+            local max_rows = 0
+            local row_total_cols = 0
+            for idx, ri in ipairs(row_imgs) do
+                if ri.active.rows > max_rows then
+                    max_rows = ri.active.rows
+                end
+                row_total_cols = row_total_cols + ri.active.cols
+                if idx > 1 then
+                    row_total_cols = row_total_cols + GAP_COLS
+                end
+            end
+
+            -- Build combined virtual lines for this badge row
+            for r = 1, max_rows do
+                local line = {}
+                for idx, ri in ipairs(row_imgs) do
+                    if idx > 1 then
+                        -- Gap between badges
+                        line[#line + 1] = { string.rep(' ', GAP_COLS), '' }
+                    end
+                    if r <= ri.active.rows then
+                        -- This image has content at this row
+                        local hl = kitty.get_highlight(ri.active.id)
+                        line[#line + 1] = { kitty.build_placeholder_row(r, ri.active.cols), hl }
+                    else
+                        -- Pad shorter images with spaces
+                        line[#line + 1] = { string.rep(' ', ri.active.cols), '' }
+                    end
+                end
+                grids[#grids + 1] = line
+            end
+
+            total_cols = math.max(total_cols, row_total_cols)
+        end
+    else
+        -- Vertical stacking (single large image or single badge)
+        for _, ri in ipairs(ready_imgs) do
+            total_cols = math.max(total_cols, ri.active.cols)
+            local lines = kitty.build_virt_lines(ri.active.id, ri.active.rows, ri.active.cols)
+            for _, line in ipairs(lines) do
+                grids[#grids + 1] = line
+            end
+        end
+    end
+
+    -- Apply alignment padding to virtual lines
+    if honor_props and img_align and total_cols > 0 then
         local pad = 0
         if img_align == 'center' then
-            pad = math.max(0, math.floor((win_width - img_cols) / 2))
+            pad = math.max(0, math.floor((win_width - total_cols) / 2))
         elseif img_align == 'right' then
-            pad = math.max(0, win_width - img_cols)
+            pad = math.max(0, win_width - total_cols)
         end
-        -- left alignment is the default (pad = 0)
         if pad > 0 then
             local pad_str = string.rep(' ', pad)
             for i, line in ipairs(grids) do
-                -- Prepend padding to the first element of each virtual line
                 grids[i] = vim.list_extend({ { pad_str, '' } }, line)
             end
         end

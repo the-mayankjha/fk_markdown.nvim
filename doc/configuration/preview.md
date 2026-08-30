@@ -11,20 +11,24 @@
 | `:FkPreview` | Start live browser preview for the current buffer |
 | `:FkPreviewStop` | Stop the preview server for the current buffer |
 | `:FkPreviewToggle` | Toggle the preview server on / off |
-| `:FkPreviewAutoScroll [on\|off\|toggle]` | Toggle synchronized cursor scrolling |
+| `:FkPreviewAutoScroll [on\|off\|toggle]` | Toggle or set synchronized cursor scrolling |
+
+> [!TIP]
+> `:FkAutoScroll` and `:FkAutoscroll` are available as command aliases for `:FkPreviewAutoScroll`.
 
 You can also call the Lua API directly:
 ```lua
 require('fk_markdown.preview').start()
 require('fk_markdown.preview').stop()
 require('fk_markdown.preview').toggle()
+require('fk_markdown.preview').autoscroll() -- or autoscroll("on" | "off" | "toggle")
 ```
 
 ---
 
 ## ⚙️ Full Configuration Reference
 
-All preview options are configured under the `preview` table in `require('fk_markdown').setup()`:
+All preview options are defined under the `preview` table in `require('fk_markdown').setup()`:
 
 ```lua
 require('fk_markdown').setup({
@@ -101,8 +105,8 @@ require('fk_markdown').setup({
 
 ## 🎨 Syntax Highlighting & Colors
 
-### 1. Choose a Theme
-You can select any theme from the [Highlight.js Theme Library](https://highlightjs.org/examples):
+### 1. Highlight.js Themes
+Choose any theme from the [Highlight.js Theme Library](https://highlightjs.org/examples):
 
 ```lua
 require('fk_markdown').setup({
@@ -166,6 +170,16 @@ preview = {
 
 ---
 
+## 📜 Synchronized Auto-Scroll
+
+When `auto_scroll = true` (default), the preview window smoothly tracks your cursor line in Neovim in real-time as you navigate.
+
+- Toggle during runtime with `:FkPreviewAutoScroll`
+- Force a state with `:FkPreviewAutoScroll on` or `:FkPreviewAutoScroll off`
+- Set in configuration with `preview = { auto_scroll = false }`
+
+---
+
 ## ⌨️ Setting Keymaps
 
 Easily bind keys to start, stop, or toggle preview:
@@ -191,4 +205,60 @@ The preview server automatically resolves and serves local relative images (PNG,
 ```markdown
 ![Architecture](./assets/diagram.png)
 <img src="banner.png" width="600" />
+```
+
+---
+
+## 📋 Option Reference
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `enabled` | `boolean` | `true` | Enable preview feature |
+| `auto_start` | `boolean` | `false` | Launch browser on opening markdown files |
+| `auto_close` | `boolean` | `true` | Stop preview server when buffer is closed |
+| `auto_scroll` | `boolean` | `true` | Synchronize browser scroll position with cursor |
+| `browser` | `string` | `""` | Browser executable (`""` uses system default) |
+| `browser_func` | `function` | `nil` | Custom opener callback `fun(url: string)` |
+| `port` | `integer\|nil` | `nil` | Fixed server port (`nil` assigns random available port) |
+| `open_ip` | `string` | `"127.0.0.1"` | IP address to bind local server |
+| `theme` | `string` | `"dark"` | Preview document theme (`"dark"` or `"light"`) |
+| `syntax_highlight.enabled` | `boolean` | `true` | Enable codeblock syntax highlighting |
+| `syntax_highlight.theme` | `string` | `"github-dark"` | Highlight.js CSS theme name |
+| `syntax_highlight.colors` | `table` | `{}` | Custom token color overrides (hex / hl group) |
+| `keymap.start` | `string\|false` | `false` | Normal mode keymap to start preview |
+| `keymap.stop` | `string\|false` | `false` | Normal mode keymap to stop preview |
+| `keymap.toggle` | `string\|false` | `false` | Normal mode keymap to toggle preview |
+
+---
+
+## 💡 Recommended Configurations
+
+### Catppuccin Theme Preview
+```lua
+require('fk_markdown').setup({
+    preview = {
+        theme = "dark",
+        syntax_highlight = {
+            enabled = true,
+            theme = "github-dark",
+            colors = {
+                background    = "#1e1e2e",
+                text          = "#cdd6f4",
+                border        = "#313244",
+                keyword       = "#cba6f7",
+                string        = "#a6e3a1",
+                number        = "#fab387",
+                comment       = "#6c7086",
+                function_name = "#89b4fa",
+                variable      = "#f38ba8",
+                operator      = "#89dceb",
+                builtin       = "#f2cdcd",
+                type          = "#f9e2af",
+            },
+        },
+        keymap = {
+            toggle = "<leader>mp",
+        },
+    },
+})
 ```

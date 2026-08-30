@@ -22,6 +22,7 @@ A lightweight Neovim plugin for rendering and customizing Markdown elements with
 - 🔧 **Per-element configuration** — Separate config docs for each Markdown element
 - 📝 **Wide support** — Headers, emphasis, links, tables, code blocks, quotes, callouts, lists, and images
 - 🎯 **Treesitter integration** — Enhanced syntax highlighting for code blocks
+- 🌐 **Live Web Preview** — Built-in browser preview with live reload, synchronized auto-scrolling, local images, and code syntax highlighting
 
 <div align="center" style="margin: 30px 0;">
     <img alt="fk_markdown.nvim features showcase" width="100%" src="feature1.png" />
@@ -511,12 +512,74 @@ For detailed configuration of individual elements, see:
 - **[Table Configuration](doc/configuration/table.md)** — Presets, cell modes, padding, and border characters
 - **[Codeblock Configuration](doc/configuration/codeblock.md)** — Borders, backgrounds, padding, titles, and DevIcon colors
 - **[Callout Configuration](doc/configuration/callout.md)** — Boxy/compact styles, accent bars, and callout types
+- **[Web Preview Configuration](doc/configuration/preview.md)** — Synchronized auto-scroll, Highlight.js themes, custom color palettes, and server settings
 - **[General Configuration](doc/configuration.md)** — Bullets, checkboxes, links, dashes, and plugin settings
 
 Additional resources:
 - **[Custom Handlers](doc/custom-handlers.md)** — Extend rendering with custom Lua functions
 - **[Limitations](doc/limitations.md)** — Known limitations and workarounds
 - **[Troubleshooting](doc/troubleshooting.md)** — Common issues and solutions
+
+---
+
+## 🌐 Browser Preview
+
+Preview your Markdown documents live in a web browser with real-time live synchronization, cursor-based synchronized auto-scrolling, local image serving, and customizable code syntax highlighting.
+
+### Commands
+
+| Command | Description |
+|---|---|
+| `:FkPreview` | Start the preview server and open the browser |
+| `:FkPreviewStop` | Stop the preview server |
+| `:FkPreviewToggle` | Toggle the preview server on / off |
+| `:FkPreviewAutoScroll [on\|off\|toggle]` | Toggle or set synchronized cursor scrolling |
+
+### Setup Example
+
+```lua
+require('fk_markdown').setup({
+    preview = {
+        enabled = true,
+        auto_start = false,
+        auto_close = true,
+        auto_scroll = true,
+        browser = "",
+        open_ip = "127.0.0.1",
+        port = nil, -- random port
+        theme = "dark", -- "dark" or "light"
+
+        -- Code block syntax highlighting
+        syntax_highlight = {
+            enabled = true,
+            theme = "github-dark", -- or "atom-one-dark", "monokai", "tokyo-night-dark", "dracula", etc.
+            colors = {
+                background = "#181825",
+                keyword = "#cba6f7",
+                string = "#a6e3a1",
+                comment = "#6c7086",
+                function_name = "#89b4fa",
+            },
+        },
+
+        keymap = {
+            start = "<leader>mp",
+            stop = "<leader>ms",
+            toggle = "<leader>mt",
+        },
+    },
+})
+```
+
+For complete preview documentation and color options, see **[Web Preview Configuration](doc/configuration/preview.md)**.
+
+### Features
+
+- ⚡ **Zero Dependencies**: Uses Neovim's built-in `vim.uv` (or `vim.loop`) for the local HTTP server.
+- 🔄 **Live Reload**: Automatically pushes updates using Server-Sent Events (SSE).
+- 📜 **Synchronized Auto-Scroll**: Follows your Neovim cursor position in real-time.
+- 🎨 **Syntax Highlighting**: Supports Highlight.js themes and full custom color palette overrides.
+- 🖼️ **Local Images**: Correctly resolves and serves local image files relative to the Markdown document.
 
 ---
 
@@ -552,40 +615,3 @@ Licensed under the MIT License. See LICENSE for details.
 ## 🙏 Acknowledgments
 
 Built with ❤️ for the Neovim community. Thanks to all contributors and users!
-
-## 🌐 Browser Preview
-
-You can preview your Markdown documents live in a web browser, with automatic updates as you type.
-
-### Commands
-
-- `:FkPreview` - Start the preview server and open the browser.
-- `:FkPreviewStop` - Stop the preview server.
-- `:FkPreviewToggle` - Toggle the preview server.
-
-### Setup
-
-```lua
-require('fk_markdown').setup({
-    preview = {
-        enabled = true,
-        auto_start = false,
-        auto_close = true,
-        browser = "",
-        open_ip = "127.0.0.1",
-        port = nil, -- random port
-        theme = "dark",
-        keymap = {
-            start = "<leader>mp",
-            stop = "<leader>ms",
-            toggle = "<leader>mt",
-        },
-    }
-})
-```
-
-### Features
-
-- ⚡ **Zero Dependencies**: Uses Neovim's built-in `vim.uv` (or `vim.loop`) for the local HTTP server.
-- 🔄 **Live Reload**: Automatically pushes updates using Server-Sent Events (SSE).
-- 🖼️ **Local Images**: Correctly resolves and serves local image files relative to the Markdown document.

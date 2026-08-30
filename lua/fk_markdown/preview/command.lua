@@ -13,20 +13,32 @@ function M.init()
         require('fk_markdown.preview').toggle()
     end, { desc = 'Toggle fk_markdown browser preview' })
 
-    vim.api.nvim_create_user_command('FkAutoscroll', function(opts)
-        local state = require('fk_markdown.state')
-        if opts.args == 'true' then
-            state.config.preview.auto_scroll = true
-        elseif opts.args == 'false' then
-            state.config.preview.auto_scroll = false
-        else
-            state.config.preview.auto_scroll = not state.config.preview.auto_scroll
-        end
-        vim.notify("FkMarkdown auto scroll set to " .. tostring(state.config.preview.auto_scroll), vim.log.levels.INFO)
-    end, { desc = 'Toggle auto scroll in preview', nargs = '?' })
+    local function autoscroll_cmd(opts)
+        require('fk_markdown.preview').autoscroll(opts.args ~= '' and opts.args or nil)
+    end
+
+    local autoscroll_opts = {
+        desc = 'Toggle or set auto scroll in preview (on|off|toggle)',
+        nargs = '?',
+        complete = function(arglead)
+            local options = { 'toggle', 'on', 'off', 'enable', 'disable', 'true', 'false' }
+            local matches = {}
+            for _, opt in ipairs(options) do
+                if opt:sub(1, #arglead) == arglead then
+                    table.insert(matches, opt)
+                end
+            end
+            return matches
+        end,
+    }
+
+    vim.api.nvim_create_user_command('FkPreviewAutoScroll', autoscroll_cmd, autoscroll_opts)
+    vim.api.nvim_create_user_command('FkAutoScroll', autoscroll_cmd, autoscroll_opts)
+    vim.api.nvim_create_user_command('FkAutoscroll', autoscroll_cmd, autoscroll_opts)
+    vim.api.nvim_create_user_command('FkPreviewAutoscroll', autoscroll_cmd, autoscroll_opts)
 
     local state = require('fk_markdown.state')
-    local config = state.config.preview or {}
+    local config = (state.config and state.config.preview) or {}
     if config.keymap then
         if config.keymap.start then
             vim.keymap.set('n', config.keymap.start, '<cmd>FkPreview<CR>', { desc = 'Start fk_markdown preview' })

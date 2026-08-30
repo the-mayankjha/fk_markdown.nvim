@@ -309,6 +309,7 @@ end
     M.initialized = true
     local config = M.resolve_config(translate_opts(opts) or {})
     require('fk_markdown.state').setup(config)
+    require('fk_markdown.preview.command').init()
 end
 
 ---@private

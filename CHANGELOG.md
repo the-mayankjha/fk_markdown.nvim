@@ -1,6 +1,14 @@
 # Change Log 
 ## Major and Minor Release
 
+## [1.1.0](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.0.0...v1.1.0) (2026-08-30)
+
+
+### Features
+
+* removed unnessary clutters ([7ee1712](https://github.com/the-mayankjha/fk_markdown.nvim/commit/7ee17125e9864971d5a939055fd4a8cad7c15500))
+* removed unnessary clutters ([d50370c](https://github.com/the-mayankjha/fk_markdown.nvim/commit/d50370ce840898b0636a67ee1eaf5ac04b0c94fa))
+
 ## 1.0.0 (2026-08-30)
 
 

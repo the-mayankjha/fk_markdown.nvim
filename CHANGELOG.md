@@ -1,6 +1,15 @@
 # Change Log 
 ## Major and Minor Release
 
+## [1.4.1](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.4.0...v1.4.1) (2026-08-30)
+
+
+### Bug Fixes
+
+* added support for github callouts ([9dc8399](https://github.com/the-mayankjha/fk_markdown.nvim/commit/9dc8399e17c16c3182cfaf3a7406ece2dccc3bfe))
+* added support for github callouts ([a43f118](https://github.com/the-mayankjha/fk_markdown.nvim/commit/a43f118fb8d699187f4100b0851cf6ca604f6a51))
+* preview options ([875d7d8](https://github.com/the-mayankjha/fk_markdown.nvim/commit/875d7d8ad90910c3657bdbdd5da4c383abb1cb44))
+
 ## [1.4.0](https://github.com/the-mayankjha/fk_markdown.nvim/compare/v1.3.2...v1.4.0) (2026-08-30)
 
 

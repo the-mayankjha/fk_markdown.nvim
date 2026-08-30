@@ -579,6 +579,7 @@ For complete preview documentation and color options, see **[Web Preview Configu
 - 🔄 **Live Reload**: Automatically pushes updates using Server-Sent Events (SSE).
 - 📜 **Synchronized Auto-Scroll**: Follows your Neovim cursor position in real-time.
 - 🎨 **Syntax Highlighting**: Supports Highlight.js themes and full custom color palette overrides.
+- 📐 **LaTeX & Math (KaTeX)**: Renders inline math `$..$`, display math `$$..$$`, and ` ```math ` / ` ```latex ` code blocks.
 - 📢 **GitHub Callouts / Alerts**: Renders `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, and `[!CAUTION]` with Octicon SVG icons and matching accent styles.
 - 🖼️ **Local Images**: Correctly resolves and serves local image files relative to the Markdown document.
 

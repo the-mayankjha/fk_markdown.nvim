@@ -91,6 +91,14 @@ require('fk_markdown').setup({
             },
         },
 
+        -- LaTeX & Math formula rendering (KaTeX)
+        latex = {
+            -- Enable LaTeX math rendering ($...$, $$...$$, \(...\), \[...\])
+            enabled = true,
+            -- Render ```math / ```latex code blocks as math formulas
+            code_blocks = true,
+        },
+
         -- Keymaps for preview actions
         keymap = {
             start  = false, -- e.g. "<leader>mp"
@@ -198,21 +206,51 @@ require('fk_markdown').setup({
 
 ---
 
+## 📐 LaTeX & Math Rendering (KaTeX)
+
+The web preview comes equipped with built-in [KaTeX](https://katex.org/) support for lightning-fast mathematical formula rendering.
+
+### Supported Math Formats:
+
+- **Inline math**: $$E = mc^2$$ 
+
+- **Display math blocks**:
+  
+  $$
+  f(x) = \int_{-\infty}^\infty \hat f(\xi)\,e^{2 \pi i \xi x}\,d\xi
+  $$
+  
+### LaTeX Configuration Options:
+```lua
+require('fk_markdown').setup({
+    preview = {
+        latex = {
+            enabled = true,     -- toggle LaTeX math rendering (default: true)
+            code_blocks = true, -- render ```math / ```latex code blocks as formulas
+        },
+    },
+})
+```
+
+---
+
 ## 🖼️ Local Image & Asset Support
 
 The preview server automatically resolves and serves local relative images (PNG, JPG, GIF, SVG) located in the same directory as your Markdown file:
 
+![Architecture](../../banner.png)
 ```markdown
 ![Architecture](./assets/diagram.png)
-<img src="banner.png" width="600" />
+
 ```
+
+
 
 ---
 
 ## 📢 GitHub-Style Callouts & Alerts
 
 The web preview natively renders all GitHub Flavored Markdown (GFM) callouts / alerts with official Octicon SVG icons, colored accent borders, and background tints:
-
 
 > [!NOTE]
 > Useful information that users should know, even when skimming.
@@ -228,7 +266,6 @@ The web preview natively renders all GitHub Flavored Markdown (GFM) callouts / a
 
 > [!CAUTION]
 > Advises about potential risks or destructive consequences.
-
 
 Supported alert types: `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`, and `DANGER`.
 
@@ -250,6 +287,8 @@ Supported alert types: `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`, and `DA
 | `syntax_highlight.enabled` | `boolean` | `true` | Enable codeblock syntax highlighting |
 | `syntax_highlight.theme` | `string` | `"github-dark"` | Highlight.js CSS theme name |
 | `syntax_highlight.colors` | `table` | `{}` | Custom token color overrides (hex / hl group) |
+| `latex.enabled` | `boolean` | `true` | Enable KaTeX LaTeX math rendering |
+| `latex.code_blocks` | `boolean` | `true` | Render ```math and ```latex code blocks as math |
 | `keymap.start` | `string\|false` | `false` | Normal mode keymap to start preview |
 | `keymap.stop` | `string\|false` | `false` | Normal mode keymap to stop preview |
 | `keymap.toggle` | `string\|false` | `false` | Normal mode keymap to toggle preview |

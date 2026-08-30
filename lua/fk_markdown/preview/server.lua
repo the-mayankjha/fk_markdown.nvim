@@ -95,6 +95,24 @@ function M:get_html()
         and '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>'
         or ''
 
+    local latex_conf = preview_conf.latex
+    local latex_enabled = true
+    local latex_code_blocks = true
+    if type(latex_conf) == 'boolean' then
+        latex_enabled = latex_conf
+    elseif type(latex_conf) == 'table' then
+        if latex_conf.enabled ~= nil then latex_enabled = latex_conf.enabled end
+        if latex_conf.code_blocks ~= nil then latex_code_blocks = latex_conf.code_blocks end
+    end
+
+    local katex_link = latex_enabled
+        and '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">'
+        or ''
+
+    local katex_scripts = latex_enabled
+        and '<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>\n<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>'
+        or ''
+
     return string.format([[<!DOCTYPE html>
 <html>
 <head>
@@ -102,14 +120,17 @@ function M:get_html()
 <title>fk_markdown preview</title>
 <link rel="stylesheet" href="%s">
 %s
+%s
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.3/purify.min.js"></script>
+%s
 %s
 <style>
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; background-color: %s; }
 .markdown-body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 0 auto; padding: 45px; }
 .markdown-body pre { border-radius: 8px; }
 .markdown-body pre code.hljs { padding: 0; background: transparent; }
+.katex-display-block { margin: 1.2em 0; overflow-x: auto; text-align: center; }
 @media (max-width: 767px) { .markdown-body { padding: 15px; } }
 
 /* GitHub Alert / Callout Styles */
@@ -191,6 +212,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Ar
 <script>
 const contentDiv = document.getElementById('content');
 const syntaxHighlightEnabled = %s;
+const latexEnabled = %s;
+const latexCodeBlocks = %s;
 
 const alertIcons = {
     note: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
@@ -244,6 +267,36 @@ function processAlerts(container) {
 function renderMarkdown(text) {
     contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(text));
     processAlerts(contentDiv);
+    if (latexEnabled) {
+        if (latexCodeBlocks && window.katex) {
+            contentDiv.querySelectorAll('pre code.language-math, pre code.language-latex, pre code.language-tex').forEach((block) => {
+                try {
+                    const mathDiv = document.createElement('div');
+                    mathDiv.className = 'katex-display-block';
+                    katex.render(block.textContent, mathDiv, { displayMode: true, throwOnError: false });
+                    block.closest('pre').replaceWith(mathDiv);
+                } catch (e) {
+                    console.error("KaTeX code block error:", e);
+                }
+            });
+        }
+        if (window.renderMathInElement) {
+            try {
+                renderMathInElement(contentDiv, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '\\[', right: '\\]', display: true },
+                        { left: '$', right: '$', display: false },
+                        { left: '\\(', right: '\\)', display: false }
+                    ],
+                    throwOnError: false,
+                    ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'option']
+                });
+            } catch (e) {
+                console.error("KaTeX auto-render error:", e);
+            }
+        }
+    }
     if (syntaxHighlightEnabled && window.hljs) {
         contentDiv.querySelectorAll('pre code').forEach((block) => {
             try {
@@ -282,10 +335,14 @@ es.onmessage = function(e) {
 </html>]],
         markdown_css,
         hljs_link,
+        katex_link,
         hljs_script,
+        katex_scripts,
         body_bg,
         custom_css_str,
-        tostring(highlight_enabled)
+        tostring(highlight_enabled),
+        tostring(latex_enabled),
+        tostring(latex_code_blocks)
     )
 end
 

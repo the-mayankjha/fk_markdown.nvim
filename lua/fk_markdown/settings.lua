@@ -2044,6 +2044,10 @@ M.preview = {}
 ---@field theme string
 ---@field colors render.md.preview.syntax.Colors
 
+---@class (exact) render.md.preview.latex.Config
+---@field enabled boolean
+---@field code_blocks boolean
+
 ---@class (exact) render.md.preview.Config
 ---@field enabled boolean
 ---@field auto_start boolean
@@ -2055,6 +2059,7 @@ M.preview = {}
 ---@field open_ip string
 ---@field theme string
 ---@field syntax_highlight render.md.preview.syntax.Config
+---@field latex render.md.preview.latex.Config
 ---@field keymap table<string, string|boolean>
 
 ---@type render.md.preview.Config
@@ -2076,6 +2081,13 @@ M.preview.default = {
         theme = "github-dark",
         -- Custom syntax color overrides (hex colors like '#f38ba8' or Neovim highlight group names)
         colors = {},
+    },
+    -- Web preview LaTeX / Math rendering configuration (KaTeX)
+    latex = {
+        -- Enable LaTeX math rendering in web preview ($...$, $$...$$, \(...\), \[...\])
+        enabled = true,
+        -- Render ```math / ```latex code blocks as math formulas
+        code_blocks = true,
     },
     keymap = {
         start = false,

@@ -294,6 +294,21 @@ local function translate_opts(user_opts)
                 rm_opts.preview.syntax_highlight.colors[k] = resolve_color(v, is_bg)
             end
         end
+
+        -- LaTeX math rendering in preview
+        if pv.latex ~= nil then
+            rm_opts.preview.latex = rm_opts.preview.latex or {}
+            if type(pv.latex) == 'boolean' then
+                rm_opts.preview.latex.enabled = pv.latex
+            elseif type(pv.latex) == 'table' then
+                if pv.latex.enabled ~= nil then
+                    rm_opts.preview.latex.enabled = pv.latex.enabled
+                end
+                if pv.latex.code_blocks ~= nil then
+                    rm_opts.preview.latex.code_blocks = pv.latex.code_blocks
+                end
+            end
+        end
     end
 
     return rm_opts

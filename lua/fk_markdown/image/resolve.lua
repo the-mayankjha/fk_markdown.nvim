@@ -18,6 +18,11 @@ local function decode(s)
     return s
 end
 
+local function ext(path)
+    local match = path:match('%.([^%.]+)$')
+    return match and match:lower() or ''
+end
+
 ---@param path string
 ---@return string
 local function sniff(path)

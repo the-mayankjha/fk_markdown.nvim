@@ -1,621 +1,1030 @@
+
 <p align="center">
   <img alt="fk_markdown.nvim banner" width="600" src="banner.png" />
 </p>
 
 <p align="center">
-  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/releases"><img src="https://img.shields.io/github/v/release/the-mayankjha/fk_markdown.nvim?style=for-the-badge&logo=github" alt="GitHub Release"/></a>
-  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/stargazers"><img src="https://img.shields.io/github/stars/the-mayankjha/fk_markdown.nvim?style=for-the-badge&logo=github" alt="GitHub stars"/></a>
-  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/blob/main/LICENSE"><img src="https://img.shields.io/github/license/the-mayankjha/fk_markdown.nvim?style=for-the-badge" alt="License: MIT"/></a>
+  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/releases">
+    <img src="https://img.shields.io/github/v/release/the-mayankjha/fk_markdown.nvim?style=for-the-badge&logo=github" alt="GitHub Release"/>
+  </a>
+  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/stargazers">
+    <img src="https://img.shields.io/github/stars/the-mayankjha/fk_markdown.nvim?style=for-the-badge&logo=github" alt="GitHub Stars"/>
+  </a>
+  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/the-mayankjha/fk_markdown.nvim?style=for-the-badge" alt="License: MIT"/>
+  </a>
   <img src="https://img.shields.io/badge/Neovim-0.9+-blueviolet.svg?style=for-the-badge&logo=neovim" alt="Neovim 0.9+"/>
   <img src="https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua" alt="Lua"/>
-  <a href="https://luarocks.org/modules/flashcodes-themayankjha/fk_markdown.nvim"><img src="https://img.shields.io/luarocks/v/flashcodes-themayankjha/fk_markdown.nvim?style=for-the-badge&logo=lua&color=purple" alt="LuaRocks"/></a>
-  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/the-mayankjha/fk_markdown.nvim/release.yml?style=for-the-badge&logo=github-actions" alt="Release Pipeline"/></a>
+  <a href="https://luarocks.org/modules/flashcodes-themayankjha/fk_markdown.nvim">
+    <img src="https://img.shields.io/luarocks/v/flashcodes-themayankjha/fk_markdown.nvim?style=for-the-badge&logo=lua&color=purple" alt="LuaRocks"/>
+  </a>
+  <a href="https://github.com/the-mayankjha/fk_markdown.nvim/actions/workflows/release.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/the-mayankjha/fk_markdown.nvim/release.yml?style=for-the-badge&logo=github-actions" alt="Release Pipeline"/>
+  </a>
 </p>
 
+# fk_markdown.nvim
 
-A lightweight Neovim plugin for rendering and customizing Markdown elements with flexible Lua configuration. Provides beautiful, customizable rendering of headers, code blocks, tables, callouts, lists, and more.
+A lightweight and highly customizable Markdown rendering and live-preview plugin for Neovim.
 
-## ✨ Features
+`fk_markdown.nvim` brings two complementary experiences together:
 
-- 🎨 **Fully customizable** — Configure every element with highlight groups, sizes, and styles
-- ⚡ **Lightweight** — Minimal overhead with efficient rendering
-- 🔧 **Per-element configuration** — Separate config docs for each Markdown element
-- 📝 **Wide support** — Headers, emphasis, links, tables, code blocks, quotes, callouts, lists, and images
-- 🎯 **Treesitter integration** — Enhanced syntax highlighting for code blocks
-- 🌐 **Live Web Preview** — Built-in browser preview with live reload, synchronized auto-scrolling, local images, and code syntax highlighting
+* **In-editor Markdown Rendering** — transform Markdown syntax into a clean, visually rich editing experience directly inside Neovim.
+* **Live Browser Preview** — preview your Markdown documents in a browser with live reload, synchronized scrolling, syntax highlighting, diagrams, math, callouts, and local image support.
 
-<div align="center" style="margin: 30px 0;">
-    <img alt="fk_markdown.nvim features showcase" width="100%" src="feature1.png" />
+The rendering system is designed to be highly configurable, allowing individual Markdown elements to be customized through Lua.
 
-</div>
 
----
+## Features at a Glance
 
-## 📦 Installation
+###  Rendering
 
-### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
+* Custom heading icons, colors, and backgrounds
+* Styled fenced code blocks
+* Dynamic language icons and colors
+* Custom Markdown tables
+* Callouts and blockquotes
+* Custom bullets and nested list styling
+* Task-list checkboxes
+* Context-aware link icons
+* WikiLink support
+* Thematic breaks
+* Treesitter-enhanced rendering
+* Per-element configuration
+* Custom highlight groups
+* Flexible padding and spacing
 
-```lua
-use {
-  'the-mayankjha/fk_markdown.nvim',
-  config = function()
-    require('fk_markdown').setup({
-      -- configuration here (see examples below)
-    })
-  end
-}
-```
+###  Preview
 
-### Using [vim-plug](https://github.com/junegunn/vim-plug)
+* Live browser preview
+* Automatic live reload
+* Synchronized cursor scrolling
+* Local image support
+* Syntax highlighting
+* Custom Highlight.js themes
+* Custom syntax-highlighting colors
+* LaTeX and Math rendering through KaTeX
+* PlantUML diagram rendering
+* GitHub-style callouts
+* Responsive preview layout
+* Configurable browser and server settings
+* Custom preview keymaps
 
-```vim
-Plug 'the-mayankjha/fk_markdown.nvim'
-```
 
-Then in your `init.lua`:
 
-```lua
-require('fk_markdown').setup({
-  -- configuration here
-})
-```
+#  Installation
 
-### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
+## Requirements
+
+* **Neovim 0.9+**
+* **Treesitter** — optional, recommended for enhanced syntax highlighting.
+
+## lazy.nvim
 
 ```lua
 {
   'the-mayankjha/fk_markdown.nvim',
   config = function()
-    require('fk_markdown').setup({
-      -- configuration here
-    })
-  end
+    require('fk_markdown').setup({})
+  end,
 }
 ```
 
-### Using [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim)
+## packer.nvim
 
-```bash
-:Rocks install fk_markdown.nvim
+```lua
+use {
+  'the-mayankjha/fk_markdown.nvim',
+  config = function()
+    require('fk_markdown').setup({})
+  end,
+}
 ```
 
----
+## vim-plug
 
-## ⚙️ Quick Setup
+```vim
+Plug 'the-mayankjha/fk_markdown.nvim'
+```
 
-Minimal configuration to get started:
+Then add:
 
 ```lua
 require('fk_markdown').setup({})
 ```
 
-For a more personalized setup, see the **Feature Configuration** section below.
+## rocks.nvim
+
+```vim
+:Rocks install fk_markdown.nvim
+```
+
+> [!NOTE]
+>  This Plugin is tested for lazy.nvim only 
+
 
 ---
 
-## 🎨 Feature Configuration
+#  Quick Start
 
-### Headers
+`fk_markdown.nvim` works out of the box with a minimal configuration:
 
-Render Markdown headers (#, ##, ###, etc.) with customizable icons, background colors, and font colors per heading level.
+```lua
+require('fk_markdown').setup({})
+```
+
+For most users, this is all that is required to get started.
+
+The rest of this README is divided into two major sections:
+
+* [ Rendering](#-rendering)
+* [ Preview](#-preview)
+
+---
+
+#  Rendering
+
+The rendering system transforms Markdown syntax into a cleaner and more expressive representation directly inside Neovim.
+
+Each Markdown component can be configured independently, allowing you to control icons, colors, borders, padding, backgrounds, and rendering behavior.
+
+The rendering system was initially inspired by and built with reference to the excellent `render-markdown.nvim` project by MeanderingProgrammer. The project provides a strong foundation for in-editor Markdown rendering and demonstrates a highly configurable component-based rendering architecture. [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim?utm_source=chatgpt.com)
+
+---
+
+## Rendering Features
+
+### Supported Components
+
+| Component           | Features                                              |
+| ------------------- | ----------------------------------------------------- |
+| **Headings**        | Icons, colors, backgrounds, per-level styling         |
+| **Code Blocks**     | Borders, language icons, titles, backgrounds, padding |
+| **Tables**          | Borders, presets, padding, alignment indicators       |
+| **Callouts**        | Boxed and compact styles, icons, colors               |
+| **Blockquotes**     | Accent bars, icons, nested highlight groups           |
+| **Bullets**         | Custom icons, nesting-aware rendering, padding        |
+| **Checkboxes**      | Custom checked/unchecked icons and states             |
+| **Links**           | Context-aware icons, WikiLinks, custom destinations   |
+| **Thematic Breaks** | Custom icons, width, and highlighting                 |
+| **Images**          | Styled image indicators                               |
+| **Inline Elements** | Custom highlighting and rendering behavior            |
+
+---
+
+#  Headings
+
+Render Markdown headings (`#` through `######`) using custom icons and per-level styling.
 
 <div align="center">
-  <img alt="Headers with icon rendering" width="80%" src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f" />
+  <img
+    alt="Headers with icon rendering"
+    width="80%"
+    src="https://github.com/user-attachments/assets/2ff2f9b9-4c31-417d-8f43-77e617cc690f"
+  />
   <p><em>Headers with custom icons and per-level foreground colors</em></p>
 </div>
 
-**Configuration:**
+### Configuration
 
 ```lua
 require('fk_markdown').setup({
-    heading = {
-        enabled = true,
-        -- Set to false to show native '#' markers instead of icons
-        icon = true,
-        -- Custom icons for H1 to H6
-        icons = { '󰲡 ', '󰲣 ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' },
-        background = {
-            enabled = false,
-            -- Background fill colors for H1 -> H6
-            bg_color = {
-                "#1e1e2e", "#1e1e2e", "#1e1e2e",
-                "#1e1e2e", "#1e1e2e", "#1e1e2e",
-            },
-            -- Foreground text colors for H1 -> H6
-            font_color = {
-                "#f38ba8", "#fab387", "#f9e2af",
-                "#a6e3a1", "#74c7ec", "#cba6f7",
-            },
-        },
+  heading = {
+    enabled = true,
+    icon = true,
+
+    icons = {
+      '󰲡 ', '󰲣 ', '󰲥 ',
+      '󰲧 ', '󰲩 ', '󰲫 ',
     },
+
+    background = {
+      enabled = false,
+
+      bg_color = {
+        "#1e1e2e", "#1e1e2e", "#1e1e2e",
+        "#1e1e2e", "#1e1e2e", "#1e1e2e",
+      },
+
+      font_color = {
+        "#f38ba8", "#fab387", "#f9e2af",
+        "#a6e3a1", "#74c7ec", "#cba6f7",
+      },
+    },
+  },
 })
 ```
 
-**Options:**
-- `enabled` — Toggle heading rendering (`boolean`)
-- `icon` — Show custom icons or native `#` markers (`boolean`)
-- `icons` — List of icons for H1 to H6 (`string[]`)
-- `background.enabled` — Toggle background fill behind headers (`boolean`)
-- `background.bg_color` — Hex colors for backgrounds H1–H6 (`string[]`)
-- `background.font_color` — Hex colors for foreground text H1–H6 (`string[]`)
+### Options
 
-[Full header configuration docs →](doc/configuration/header.md)
+* `enabled` — Enable or disable heading rendering.
+* `icon` — Use custom icons instead of native `#` markers.
+* `icons` — Icons used for H1 through H6.
+* `background.enabled` — Enable or disable heading backgrounds.
+* `background.bg_color` — Background colors for H1 through H6.
+* `background.font_color` — Foreground colors for H1 through H6.
+
+[Header Configuration](doc/configuration/header.md)
 
 ---
 
-### Code Blocks
+#  Code Blocks
 
-Render fenced code blocks with rounded borders, dynamic DevIcon-colored language pills, background fills, and granular padding.
+Render fenced code blocks with configurable borders, language indicators, titles, backgrounds, and padding.
 
 <div align="center">
-  <img alt="Code blocks with syntax highlighting and borders" width="80%" src="https://github.com/user-attachments/assets/fcd53006-4cbc-46d1-bdc5-f5cc7da41c55" />
+  <img
+    alt="Code blocks with syntax highlighting and borders"
+    width="80%"
+    src="https://github.com/user-attachments/assets/fcd53006-4cbc-46d1-bdc5-f5cc7da41c55"
+  />
   <p><em>Code blocks with dynamic language-colored borders and title pills</em></p>
 </div>
 
-**Configuration:**
+### Configuration
 
 ```lua
 require('fk_markdown').setup({
-    code = {
-        enabled = true,
-        -- 'wide' spans the full window width, 'compact' wraps the text tightly
-        style = 'wide',
-        background = {
-            enabled = false,
-            color = "#181825",
-        },
-        padding = {
-            top = 1,     -- Virtual lines between top border and code
-            bottom = 1,  -- Virtual lines between code and bottom border
-            left = 1,    -- Spaces between left border │ and code
-            right = 2,   -- Extra right-side width (useful for 'compact')
-        },
-        border = {
-            enabled = true,
-            -- "dynamic" matches the DevIcon color of the language
-            -- "static" uses the hex color below for all blocks
-            type = "dynamic",
-            color = "#f38ba8",
-        },
-        title = {
-            enabled = true,
-            type = "dynamic",
-            color = "#a6e3a1",
-        },
-        icon = {
-            enabled = true,
-        },
+  code = {
+    enabled = true,
+
+    -- 'wide' or 'compact'
+    style = 'wide',
+
+    background = {
+      enabled = false,
+      color = "#181825",
     },
+
+    padding = {
+      top = 1,
+      bottom = 1,
+      left = 1,
+      right = 2,
+    },
+
+    border = {
+      enabled = true,
+      type = "dynamic",
+      color = "#f38ba8",
+    },
+
+    title = {
+      enabled = true,
+      type = "dynamic",
+      color = "#a6e3a1",
+    },
+
+    icon = {
+      enabled = true,
+    },
+  },
 })
 ```
 
-**Options:**
-- `style` — `'wide'` (full-width) or `'compact'` (content-width)
-- `background.enabled` / `background.color` — Toggle and set background fill
-- `padding` — `top`, `bottom`, `left`, `right` spacing controls
-- `border.type` — `"dynamic"` (per-language DevIcon color) or `"static"` (fixed hex)
-- `title.enabled` / `title.type` — Language name pill visibility and coloring
+### Options
 
-[Full codeblock configuration docs →](doc/configuration/codeblock.md)
+* `style` — `'wide'` or `'compact'`.
+* `background.enabled` / `background.color` — Configure the block background.
+* `padding` — Configure top, bottom, left, and right spacing.
+* `border.type` — `"dynamic"` or `"static"`.
+* `title.enabled` — Enable or disable language title pills.
+* `title.type` — Use dynamic or static title colors.
+* `icon.enabled` — Enable or disable language icons.
+
+[Code Block Configuration](doc/configuration/codeblock.md)
 
 ---
 
-### Tables
+#  Tables
 
-Render Markdown pipe tables with configurable border presets, cell padding, and alignment indicators.
+Render Markdown pipe tables with configurable borders, cell padding, presets, and alignment indicators.
 
 <div align="center">
-  <img alt="Markdown tables with borders and row highlighting" width="80%" src="https://github.com/user-attachments/assets/3706dc15-80e3-4c3b-aece-4042ed55928e" />
+  <img
+    alt="Markdown tables with borders and row highlighting"
+    width="80%"
+    src="https://github.com/user-attachments/assets/3706dc15-80e3-4c3b-aece-4042ed55928e"
+  />
   <p><em>Tables with rounded borders and padded cells</em></p>
 </div>
 
-**Configuration:**
+### Configuration
 
 ```lua
 require('fk_markdown').setup({
-    pipe_table = {
-        enabled = true,
-        -- 'round' | 'double' | 'heavy' | 'none'
-        preset = 'none',
-        -- 'padded' | 'trimmed' | 'raw' | 'overlay'
-        cell = 'padded',
-        padding = 1,
-        min_width = 0,
-        border = {
-            '┌', '┬', '┐',
-            '├', '┼', '┤',
-            '└', '┴', '┘',
-            '│', '─',
-        },
-        border_enabled = true,
-        alignment_indicator = '━',
-        head = 'RenderMarkdownTableHead',
-        row = 'RenderMarkdownTableRow',
-        -- 'full' | 'normal' | 'none'
-        style = 'full',
+  pipe_table = {
+    enabled = true,
+
+    -- 'round' | 'double' | 'heavy' | 'none'
+    preset = 'none',
+
+    -- 'padded' | 'trimmed' | 'raw' | 'overlay'
+    cell = 'padded',
+
+    padding = 1,
+    min_width = 0,
+
+    border = {
+      '┌', '┬', '┐',
+      '├', '┼', '┤',
+      '└', '┴', '┘',
+      '│', '─',
     },
+
+    border_enabled = true,
+    alignment_indicator = '━',
+
+    head = 'RenderMarkdownTableHead',
+    row = 'RenderMarkdownTableRow',
+
+    -- 'full' | 'normal' | 'none'
+    style = 'full',
+  },
 })
 ```
 
-**Options:**
-- `preset` — Quick border style: `'round'`, `'double'`, `'heavy'`, or `'none'`
-- `cell` — Cell rendering mode: `'padded'`, `'trimmed'`, `'raw'`, `'overlay'`
-- `padding` — Spaces between cell text and borders (`integer`)
-- `border` — 11-character list defining all border characters
-- `style` — `'full'`, `'normal'` (no top/bottom), or `'none'` (disabled)
+### Options
 
-[Full table configuration docs →](doc/configuration/table.md)
+* `preset` — `'round'`, `'double'`, `'heavy'`, or `'none'`.
+* `cell` — `'padded'`, `'trimmed'`, `'raw'`, or `'overlay'`.
+* `padding` — Cell spacing.
+* `border` — Custom border characters.
+* `border_enabled` — Enable or disable table borders.
+* `alignment_indicator` — Character used to indicate alignment.
+* `style` — `'full'`, `'normal'`, or `'none'`.
+
+[Table Configuration](doc/configuration/table.md)
 
 ---
 
-### Callouts & Blockquotes
+#  Callouts
 
-Render blockquotes with a Notion-like boxy container or a classic compact left-bar. Callouts support GitHub and Obsidian types with custom icons.
+Render GitHub- and Obsidian-style callouts with custom icons, colors, backgrounds, borders, and layouts.
 
 <div align="center">
-  <img alt="Callouts with icons and colors" width="80%" src="https://github.com/user-attachments/assets/d81b57b4-cad3-45b3-bc25-f9d1f88438e8" />
+  <img
+    alt="Callouts with icons and colors"
+    width="80%"
+    src="https://github.com/user-attachments/assets/d81b57b4-cad3-45b3-bc25-f9d1f88438e8"
+  />
   <p><em>Boxy callouts with accent bars and rounded borders</em></p>
 </div>
 
-**Configuration:**
+### Configuration
 
 ```lua
 require('fk_markdown').setup({
-    quote = {
-        enabled = true,
-        -- 'boxy' for Notion-style containers, 'compact' for left-bar style
-        style = 'boxy',
-        -- Left accent bar toggle
-        border = true,
-        -- Background color (hex or "NONE" for transparent)
-        bg = "NONE",
-        -- Foreground text color
-        fg = "#cad3f5",
-    },
+  quote = {
+    enabled = true,
+
+    -- 'boxy' or 'compact'
+    style = 'boxy',
+
+    border = true,
+    bg = "NONE",
+    fg = "#cad3f5",
+  },
 })
 ```
 
-**Options:**
-- `style` — `'boxy'` (bordered container) or `'compact'` (left accent bar)
-- `border` — Toggle rounded borders in boxy mode (`boolean`)
-- `bg` — Background hex color or `"NONE"` for transparent
-- `fg` — Foreground text hex color
+### Options
 
-[Full callout configuration docs →](doc/configuration/callout.md)
+* `style` — `'boxy'` or `'compact'`.
+* `border` — Enable or disable the container border.
+* `bg` — Background color.
+* `fg` — Foreground color.
 
----
+[Callout Configuration](doc/configuration/callout.md)
 
-### Bullets & Lists
 
-Customize bullet characters, padding, and scope highlights for unordered and ordered lists.
+#  Blockquotes
 
-<div align="center">
-  <img alt="Bulleted and numbered lists" width="80%" src="https://github.com/user-attachments/assets/205f6f10-0ba4-4e60-9d77-4704bff78354" />
-  <p><em>Lists with custom bullet icons cycling by nesting depth</em></p>
-</div>
+Blockquotes can be rendered using a custom accent bar and level-based highlights.
 
-**Configuration:**
+### Configuration
 
 ```lua
 require('fk_markdown').setup({
-    bullet = {
-        enabled = true,
-        -- Cycles based on nesting level
-        icons = { '●', '○', '◆', '◇' },
-        left_pad = 0,
-        right_pad = 0,
-        highlight = 'RenderMarkdownBullet',
+  quote = {
+    enabled = true,
+    icon = '▋',
+    repeat_linebreak = false,
+
+    highlight = {
+      'RenderMarkdownQuote1',
+      'RenderMarkdownQuote2',
+      'RenderMarkdownQuote3',
+      'RenderMarkdownQuote4',
+      'RenderMarkdownQuote5',
+      'RenderMarkdownQuote6',
     },
+  },
 })
 ```
 
-**Options:**
-- `icons` — Bullet characters, cycling per nesting depth (`string[]`)
-- `left_pad` / `right_pad` — Spacing around bullet points (`integer`)
-- `highlight` — Highlight group for bullet icons
 
----
+#  Bullets & Lists
 
-### Checkboxes
+Customize list bullets according to nesting depth.
 
-Replace native task list markers with custom icons and highlights.
-
-**Configuration:**
+### Configuration
 
 ```lua
 require('fk_markdown').setup({
-    checkbox = {
-        enabled = true,
-        unchecked = {
-            icon = '󰄱 ',
-            highlight = 'RenderMarkdownUnchecked',
-        },
-        checked = {
-            icon = '󰱒 ',
-            highlight = 'RenderMarkdownChecked',
-        },
-        custom = {
-            todo = { raw = '[-]', rendered = '󰥔 ', highlight = 'RenderMarkdownTodo' },
-        },
+  bullet = {
+    enabled = true,
+
+    icons = {
+      '●', '○', '◆', '◇',
     },
+
+    left_pad = 0,
+    right_pad = 0,
+
+    highlight = 'RenderMarkdownBullet',
+  },
 })
 ```
 
-**Options:**
-- `unchecked.icon` / `checked.icon` — Replacement icons for `[ ]` and `[x]`
-- `custom` — Define custom checkbox states matched against raw text
+### Options
+
+* `icons` — Bullet characters cycled by nesting depth.
+* `left_pad` / `right_pad` — Horizontal spacing.
+* `highlight` — Highlight group for bullet icons.
 
 ---
 
-### Links
+#  Checkboxes
 
-Control link decoration with per-destination icons (GitHub, YouTube, etc.) and wiki link support.
+Replace Markdown task-list markers with custom icons and highlight groups.
 
-<div align="center">
-  <img alt="Styled links" width="80%" src="https://github.com/user-attachments/assets/45c48f26-09a7-4903-b20d-732fcccf5918" />
-  <p><em>Links with contextual icons based on destination URL</em></p>
-</div>
-
-**Configuration:**
+### Configuration
 
 ```lua
 require('fk_markdown').setup({
-    link = {
-        enabled = true,
-        image = '󰥶 ',
-        email = '󰀓 ',
-        hyperlink = '󰌹 ',
-        highlight = 'RenderMarkdownLink',
-        wiki = {
-            enabled = true,
-            icon = '󱗖 ',
-        },
-        custom = {
-            web = { icon = '󰖟 ', pattern = '^http' },
-            github = { icon = '󰊤 ', pattern = 'github%.com', kind = 'url' },
-            youtube = { icon = '󰗃 ', pattern = 'youtube[^.]*%.com', kind = 'url' },
-        },
+  checkbox = {
+    enabled = true,
+
+    unchecked = {
+      icon = '󰄱 ',
+      highlight = 'RenderMarkdownUnchecked',
     },
+
+    checked = {
+      icon = '󰱒 ',
+      highlight = 'RenderMarkdownChecked',
+    },
+
+    custom = {
+      todo = {
+        raw = '[-]',
+        rendered = '󰥔 ',
+        highlight = 'RenderMarkdownTodo',
+      },
+    },
+  },
 })
 ```
 
-**Options:**
-- `image` / `email` / `hyperlink` — Fallback icons for different link types
-- `wiki` — WikiLink rendering with custom icons
-- `custom` — Pattern-matched icons for specific URL destinations
 
----
+#  Links
 
-### Blockquotes
+Render links with contextual icons based on their destination.
 
-Render blockquotes with a customizable left accent bar and level-cycling highlights.
+Supports:
 
-<div align="center">
-  <img alt="Blockquotes with vertical bar" width="80%" src="https://github.com/user-attachments/assets/87c292d5-1010-4cab-83c3-2f32e710eb92" />
-  <p><em>Blockquotes with accent bar and per-level highlight cycling</em></p>
-</div>
+* Images
+* Email links
+* Standard hyperlinks
+* WikiLinks
+* GitHub
+* YouTube
+* Custom URL patterns
 
-**Configuration:**
+### Configuration
 
 ```lua
 require('fk_markdown').setup({
-    quote = {
-        enabled = true,
-        -- Replaces '>' marker
-        icon = '▋',
-        repeat_linebreak = false,
-        highlight = {
-            'RenderMarkdownQuote1', 'RenderMarkdownQuote2',
-            'RenderMarkdownQuote3', 'RenderMarkdownQuote4',
-            'RenderMarkdownQuote5', 'RenderMarkdownQuote6',
-        },
+  link = {
+    enabled = true,
+
+    image = '󰥶 ',
+    email = '󰀓 ',
+    hyperlink = '󰌹 ',
+
+    highlight = 'RenderMarkdownLink',
+
+    wiki = {
+      enabled = true,
+      icon = '󱗖 ',
     },
+
+    custom = {
+      web = {
+        icon = '󰖟 ',
+        pattern = '^http',
+      },
+
+      github = {
+        icon = '󰊤 ',
+        pattern = 'github%.com',
+        kind = 'url',
+      },
+
+      youtube = {
+        icon = '󰗃 ',
+        pattern = 'youtube[^.]*%.com',
+        kind = 'url',
+      },
+    },
+  },
 })
 ```
 
----
+# ━ Thematic Breaks
 
-### Dashes (Thematic Breaks)
-
-Customize horizontal rule rendering.
-
-**Configuration:**
+Customize horizontal rules and Markdown thematic breaks.
 
 ```lua
 require('fk_markdown').setup({
-    dash = {
-        enabled = true,
-        icon = '─',
-        width = 'full',
-        highlight = 'RenderMarkdownDash',
-    },
-})
-```
-
----
-
-## 🚀 Complete Configuration Example
-
-```lua
-require('fk_markdown').setup({
-    -- ── Headings ──────────────────────────────────────────
-    heading = {
-        enabled = true,
-        icon = true,
-        icons = { '󰲡 ', '󰲣 ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' },
-        background = {
-            enabled = false,
-            bg_color = {
-                "#1e1e2e", "#1e1e2e", "#1e1e2e",
-                "#1e1e2e", "#1e1e2e", "#1e1e2e",
-            },
-            font_color = {
-                "#f38ba8", "#fab387", "#f9e2af",
-                "#a6e3a1", "#74c7ec", "#cba6f7",
-            },
-        },
-    },
-
-    -- ── Code Blocks ───────────────────────────────────────
-    code = {
-        enabled = true,
-        style = 'wide',
-        background = { enabled = false, color = "#181825" },
-        padding = { top = 1, bottom = 1, left = 1, right = 2 },
-        border = { enabled = true, type = "dynamic", color = "#f38ba8" },
-        title = { enabled = true, type = "dynamic", color = "#a6e3a1" },
-        icon = { enabled = true },
-    },
-
-    -- ── Quotes / Callouts ─────────────────────────────────
-    quote = {
-        enabled = true,
-        style = 'boxy',
-        border = true,
-        bg = "NONE",
-        fg = "#cad3f5",
-    },
-
-    -- ── Standard render-markdown.nvim options ─────────────
-    bullet = {
-        enabled = true,
-        icons = { '●', '○', '◆', '◇' },
-    },
-    checkbox = {
-        enabled = true,
-        unchecked = { icon = '󰄱 ', highlight = 'RenderMarkdownUnchecked' },
-        checked = { icon = '󰱒 ', highlight = 'RenderMarkdownChecked' },
-    },
-    dash = { enabled = true, icon = '─' },
-    pipe_table = {
-        enabled = true,
-        preset = 'none',
-        style = 'full',
-    },
-    link = {
-        enabled = true,
-        image = '󰥶 ',
-        hyperlink = '󰌹 ',
-    },
-    sign = { enabled = true },
-    indent = { enabled = false },
+  dash = {
+    enabled = true,
+    icon = '─',
+    width = 'full',
+    highlight = 'RenderMarkdownDash',
+  },
 })
 ```
 
 ---
 
-## 📖 Documentation
+#  Complete Rendering Configuration
 
-For detailed configuration of individual elements, see:
-
-- **[Header Configuration](doc/configuration/header.md)** — Icons, backgrounds, font colors, borders, and spacing
-- **[Table Configuration](doc/configuration/table.md)** — Presets, cell modes, padding, and border characters
-- **[Codeblock Configuration](doc/configuration/codeblock.md)** — Borders, backgrounds, padding, titles, and DevIcon colors
-- **[Callout Configuration](doc/configuration/callout.md)** — Boxy/compact styles, accent bars, and callout types
-- **[PlantUML Diagram Configuration](doc/configuration/plantuml.md)** — In-buffer Kitty graphics protocol and preview diagram rendering
-- **[Web Preview Configuration](doc/configuration/preview.md)** — Synchronized auto-scroll, Highlight.js themes, custom color palettes, and server settings
-- **[General Configuration](doc/configuration.md)** — Bullets, checkboxes, links, dashes, and plugin settings
-
-Additional resources:
-- **[Custom Handlers](doc/custom-handlers.md)** — Extend rendering with custom Lua functions
-- **[Limitations](doc/limitations.md)** — Known limitations and workarounds
-- **[Troubleshooting](doc/troubleshooting.md)** — Common issues and solutions
-
----
-
-## 🌐 Browser Preview
-
-Preview your Markdown documents live in a web browser with real-time live synchronization, cursor-based synchronized auto-scrolling, local image serving, and customizable code syntax highlighting.
-
-### Commands
-
-| Command | Description |
-|---|---|
-| `:FkPreview` | Start the preview server and open the browser |
-| `:FkPreviewStop` | Stop the preview server |
-| `:FkPreviewToggle` | Toggle the preview server on / off |
-| `:FkPreviewAutoScroll [on\|off\|toggle]` | Toggle or set synchronized cursor scrolling |
-
-### Setup Example
+A complete example combining the major rendering components:
 
 ```lua
 require('fk_markdown').setup({
-    preview = {
-        enabled = true,
-        auto_start = false,
-        auto_close = true,
-        auto_scroll = true,
-        browser = "",
-        open_ip = "127.0.0.1",
-        port = nil, -- random port
-        theme = "dark", -- "dark" or "light"
 
-        -- Code block syntax highlighting
-        syntax_highlight = {
-            enabled = true,
-            theme = "github-dark", -- or "atom-one-dark", "monokai", "tokyo-night-dark", "dracula", etc.
-            colors = {
-                background = "#181825",
-                keyword = "#cba6f7",
-                string = "#a6e3a1",
-                comment = "#6c7086",
-                function_name = "#89b4fa",
-            },
-        },
+  -- ── Headings ──────────────────────────────────────────────
+  heading = {
+    enabled = true,
+    icon = true,
 
-        keymap = {
-            start = "<leader>mp",
-            stop = "<leader>ms",
-            toggle = "<leader>mt",
-        },
+    icons = {
+      '󰲡 ', '󰲣 ', '󰲥 ',
+      '󰲧 ', '󰲩 ', '󰲫 ',
     },
+
+    background = {
+      enabled = false,
+
+      bg_color = {
+        "#1e1e2e", "#1e1e2e", "#1e1e2e",
+        "#1e1e2e", "#1e1e2e", "#1e1e2e",
+      },
+
+      font_color = {
+        "#f38ba8", "#fab387", "#f9e2af",
+        "#a6e3a1", "#74c7ec", "#cba6f7",
+      },
+    },
+  },
+
+  -- ── Code Blocks ───────────────────────────────────────────
+  code = {
+    enabled = true,
+    style = 'wide',
+
+    background = {
+      enabled = false,
+      color = "#181825",
+    },
+
+    padding = {
+      top = 1,
+      bottom = 1,
+      left = 1,
+      right = 2,
+    },
+
+    border = {
+      enabled = true,
+      type = "dynamic",
+      color = "#f38ba8",
+    },
+
+    title = {
+      enabled = true,
+      type = "dynamic",
+      color = "#a6e3a1",
+    },
+
+    icon = {
+      enabled = true,
+    },
+  },
+
+  -- ── Callouts ──────────────────────────────────────────────
+  quote = {
+    enabled = true,
+    style = 'boxy',
+    border = true,
+    bg = "NONE",
+    fg = "#cad3f5",
+  },
+
+  -- ── Bullets ───────────────────────────────────────────────
+  bullet = {
+    enabled = true,
+    icons = { '●', '○', '◆', '◇' },
+  },
+
+  -- ── Checkboxes ────────────────────────────────────────────
+  checkbox = {
+    enabled = true,
+
+    unchecked = {
+      icon = '󰄱 ',
+      highlight = 'RenderMarkdownUnchecked',
+    },
+
+    checked = {
+      icon = '󰱒 ',
+      highlight = 'RenderMarkdownChecked',
+    },
+  },
+
+  -- ── Tables ────────────────────────────────────────────────
+  pipe_table = {
+    enabled = true,
+    preset = 'none',
+    style = 'full',
+  },
+
+  -- ── Links ─────────────────────────────────────────────────
+  link = {
+    enabled = true,
+    image = '󰥶 ',
+    hyperlink = '󰌹 ',
+  },
+
+  -- ── Thematic Breaks ───────────────────────────────────────
+  dash = {
+    enabled = true,
+    icon = '─',
+  },
+
+  -- ── Signs ─────────────────────────────────────────────────
+  sign = {
+    enabled = true,
+  },
+
+  -- ── Indentation ───────────────────────────────────────────
+  indent = {
+    enabled = false,
+  },
 })
 ```
 
-For complete preview documentation and color options, see **[Web Preview Configuration](doc/configuration/preview.md)**.
+---
 
-### Features
+#  Rendering Documentation
 
-- ⚡ **Zero Dependencies**: Uses Neovim's built-in `vim.uv` (or `vim.loop`) for the local HTTP server.
-- 🔄 **Live Reload**: Automatically pushes updates using Server-Sent Events (SSE).
-- 📜 **Synchronized Auto-Scroll**: Follows your Neovim cursor position in real-time.
-- 🎨 **Syntax Highlighting**: Supports Highlight.js themes and full custom color palette overrides.
-- 📐 **LaTeX & Math (KaTeX)**: Renders inline math `$..$`, display math `$$..$$`, and ` ```math ` / ` ```latex ` code blocks.
-- 📊 **PlantUML Diagrams**: Renders ` ```plantuml ` code blocks as responsive SVG/PNG diagrams.
-- 📢 **GitHub Callouts / Alerts**: Renders `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, and `[!CAUTION]` with Octicon SVG icons and matching accent styles.
-- 🖼️ **Local Images**: Correctly resolves and serves local image files relative to the Markdown document.
+Detailed configuration documentation:
+
+* [Header Configuration](doc/configuration/header.md)
+* [Code Block Configuration](doc/configuration/codeblock.md)
+* [Table Configuration](doc/configuration/table.md)
+* [Callout Configuration](doc/configuration/callout.md)
+* [PlantUML Configuration](doc/configuration/plantuml.md)
+* [General Configuration](doc/configuration.md)
+* [Custom Handlers](doc/custom-handlers.md)
+* [Limitations](doc/limitations.md)
+* [Troubleshooting](doc/troubleshooting.md)
+
+
+# Preview
+
+The **Preview** system is a separate part of `fk_markdown.nvim`.
+
+Instead of rendering Markdown inside Neovim, Preview runs a lightweight local web server and opens the current Markdown document in your browser.
+
+Changes made in Neovim are automatically synchronized with the browser.
 
 ---
 
-## 🔧 Requirements
+## Preview Features
 
-- Neovim 0.9+
-- (Optional) Treesitter for enhanced syntax highlighting in code blocks
+### Live Reload
+
+Changes to the Markdown document are automatically pushed to the browser without manually refreshing the page.
+
+### Synchronized Scrolling
+
+The browser can follow the current cursor position in Neovim.
+
+Moving through the document in Neovim automatically updates the browser's scroll position.
+
+###  Browser Preview
+
+Open a rendered Markdown document in your preferred browser directly from Neovim.
+
+###  Local Images
+
+Local images are resolved relative to the Markdown document and served through the preview server.
+
+###  Syntax Highlighting
+
+Code blocks are rendered using Highlight.js with support for predefined themes and custom color overrides.
+
+###  LaTeX & Math
+
+Preview supports:
+
+* Inline math using `$...$`
+* Display math using `$$...$$`
+* `math` fenced code blocks
+* `latex` fenced code blocks
+
+Math rendering is provided through KaTeX.
+
+###  PlantUML
+
+PlantUML code blocks can be rendered as responsive SVG/PNG diagrams.
+
+Example:
+
+````markdown
+```plantuml
+@startuml
+Alice -> Bob: Hello
+Bob --> Alice: Hi!
+@enduml
+```
+````
+
+###  GitHub Callouts
+
+The preview renderer supports GitHub-style alerts:
+
+> [!NOTE]
+> This is a note.
+
+> [!TIP]
+> This is a tip.
+
+> [!IMPORTANT]
+> This is important.
+
+> [!WARNING]
+> This is a warning.
+
+> [!CAUTION]
+> This is a caution.
+
+
+###  Responsive Images
+
+Images are rendered responsively inside the browser preview.
+
+###  Server-Sent Events
+
+The preview server uses Server-Sent Events to push document updates to the browser.
+
+###  Lightweight Server
+
+The preview server uses Neovim's built-in networking capabilities through `vim.uv` / `vim.loop`, avoiding the need for an external web server.
 
 ---
 
-## 🤝 Contributing
+#  Preview Commands
 
-Contributions are welcome! Please follow these guidelines:
+| Command                                  | Description                                       |
+| ---------------------------------------- | ------------------------------------------------- |
+| `:FkPreview`                             | Start the preview server and open the browser     |
+| `:FkPreviewStop`                         | Stop the preview server                           |
+| `:FkPreviewToggle`                       | Toggle the preview server                         |
+| `:FkPreviewAutoScroll [on\|off\|toggle]` | Enable, disable, or toggle synchronized scrolling |
 
-1. **Adding features** — Create an issue first to discuss the feature
-2. **Updating screenshots** — Replace placeholder images in `doc/images/` with real ones
-3. **Documentation** — Keep docs updated with configuration changes
-4. **Testing** — Test your changes in different terminal emulators and color schemes
 
-To update a screenshot:
-1. Take a screenshot of the feature in Neovim
-2. Save it to `doc/images/` with the appropriate name (e.g., `headers.png`, `codeblock.png`)
-3. Update the filename reference in the README and documentation
+#  Preview Configuration
+
+```lua
+require('fk_markdown').setup({
+  preview = {
+    enabled = true,
+
+    -- Automatically start preview
+    auto_start = false,
+
+    -- Automatically stop preview when the buffer closes
+    auto_close = true,
+
+    -- Synchronize browser scrolling with the Neovim cursor
+    auto_scroll = true,
+
+    -- Browser executable.
+    -- Empty string uses the system default.
+    browser = "",
+
+    -- Address used by the preview server
+    open_ip = "127.0.0.1",
+
+    -- nil = automatically select a random available port
+    port = nil,
+
+    -- "dark" or "light"
+    theme = "dark",
+
+    -- ── Syntax Highlighting ────────────────────────────────
+    syntax_highlight = {
+      enabled = true,
+
+      -- Highlight.js theme
+      theme = "github-dark",
+
+      -- Available examples:
+      -- "atom-one-dark"
+      -- "monokai"
+      -- "tokyo-night-dark"
+      -- "dracula"
+
+      colors = {
+        background = "#181825",
+        keyword = "#cba6f7",
+        string = "#a6e3a1",
+        comment = "#6c7086",
+        function_name = "#89b4fa",
+      },
+    },
+
+    -- ── Keymaps ────────────────────────────────────────────
+    keymap = {
+      start = "<leader>mp",
+      stop = "<leader>ms",
+      toggle = "<leader>mt",
+    },
+  },
+})
+```
+
+
+#  Preview Architecture
+
+The preview system follows a simple workflow:
+
+```text
+┌────────────────────┐
+│   Markdown Buffer  │
+│      Neovim        │
+└─────────┬──────────┘
+          │
+          │ File Changes
+          ▼
+┌────────────────────┐
+│  Local HTTP Server │
+│    vim.uv / loop    │
+└─────────┬──────────┘
+          │
+          │ SSE / HTTP
+          ▼
+┌────────────────────┐
+│   Browser Preview  │
+│                    │
+│  Markdown → HTML   │
+│  Highlight.js      │
+│  KaTeX             │
+│  PlantUML          │
+└────────────────────┘
+```
+
+This keeps the preview system local and lightweight while providing a much richer viewing experience than terminal-only rendering.
+
+
+#  Preview Themes
+
+The preview supports both light and dark themes:
+
+```lua
+preview = {
+  theme = "dark",
+}
+```
+
+Syntax highlighting can independently be configured using Highlight.js themes:
+
+```lua
+syntax_highlight = {
+  enabled = true,
+  theme = "github-dark",
+}
+```
+
+Custom colors can be supplied when additional control is required:
+
+```lua
+syntax_highlight = {
+  colors = {
+    background = "#181825",
+    keyword = "#cba6f7",
+    string = "#a6e3a1",
+    comment = "#6c7086",
+    function_name = "#89b4fa",
+  },
+}
+```
+
+
+#  Preview Documentation
+
+For detailed preview configuration, see:
+
+* [Web Preview Configuration](doc/configuration/preview.md)
+* [PlantUML Configuration](doc/configuration/plantuml.md)
+
+
+#  Rendering vs Preview
+
+`fk_markdown.nvim` intentionally separates the two systems:
+
+|                         | Rendering                 | Preview                  |
+| ----------------------- | ------------------------- | ------------------------ |
+| **Environment**         | Neovim                    | Web browser              |
+| **Purpose**             | Better editing experience | Final document preview   |
+| **Rendering**           | Virtual text / extmarks   | HTML                     |
+| **Live Updates**        | Immediate                 | Live reload              |
+| **Scrolling**           | Native editor             | Synchronized with cursor |
+| **Syntax Highlighting** | Neovim                    | Highlight.js             |
+| **Math**                | Editor rendering          | KaTeX                    |
+| **PlantUML**            | Editor support            | SVG/PNG diagrams         |
+| **Images**              | Editor rendering          | Local image serving      |
+| **Callouts**            | Neovim rendering          | HTML/CSS rendering       |
+
+The two systems complement each other rather than replacing one another.
 
 ---
 
-## 📄 License
+#  Acknowledgements
 
-Licensed under the MIT License. See LICENSE for details.
+`fk_markdown.nvim` would not exist without the work and ideas shared by the Neovim community.
 
----
+### [`render-markdown.nvim`](https://github.com/MeanderingProgrammer/render-markdown.nvim)
 
-## 🙏 Acknowledgments
+Special thanks to **MeanderingProgrammer** for `render-markdown.nvim`.
 
-Built with ❤️ for the Neovim community. Thanks to all contributors and users!
+The initial idea for `fk_markdown.nvim`, as well as the foundation and general approach to in-editor Markdown rendering, was heavily inspired by and developed with reference to `render-markdown.nvim`.
+
+Its component-based rendering architecture and approach to making Markdown more pleasant to read inside Neovim provided an important starting point for this project.
+
+This project is independently developed and extends that idea with additional customization and a separate browser-based Preview system.
+
+### Other Projects
+
+Thanks to the developers and maintainers of the many open-source projects that make this plugin possible and provide valuable references, inspiration, tooling, and integrations.
+
+In particular:
+
+* **Neovim** — The editor and runtime that makes this plugin possible.
+* **Tree-sitter** — Structural parsing and syntax information used by the rendering system.
+* **nvim-web-devicons** — Language and file-type icons.
+* **Highlight.js** — Syntax highlighting for browser preview.
+* **KaTeX** — Mathematical expression rendering.
+* **PlantUML** — Diagram rendering.
+* **GitHub Markdown** — Callout/alert conventions used by the preview renderer.
+* **headlines.nvim** — An important source of inspiration for Markdown presentation in Neovim.
+* **Other Neovim plugins and their authors** — For ideas, implementation references, and continued inspiration throughout development.
+
+We are grateful to the maintainers and contributors of these projects and to the broader Neovim ecosystem.
+
+
+#  Contributing
+
+Contributions are welcome!
+
+Before submitting a significant change:
+
+1. **Discuss new features** — Open an issue to discuss the proposed functionality.
+2. **Keep documentation updated** — Update relevant documentation when behavior or configuration changes.
+3. **Test your changes** — Test across different terminal emulators and color schemes.
+
+
+# 📄 License
+
+`fk_markdown.nvim` is licensed under the **MIT License**.
+
+See [LICENSE](LICENSE) for the complete license text.
+
+#  Community
+
+Built for the Neovim community.
+
+If you find `fk_markdown.nvim` useful:
+
+*  Star the repository
+*   Report issues
+*  Suggest improvements
+*  Contribute code or documentation
+*  Share your configurations and screenshots
+
+Thank you to everyone who uses, contributes to, and helps improve the project.

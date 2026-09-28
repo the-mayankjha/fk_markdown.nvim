@@ -1,126 +1,204 @@
 # Troubleshooting
 
-The following guide goes from easy to complex operations that can help when this
-plugin is not functioning how you expect. As such it is recommended to go in order.
+This document provides troubleshooting guidance for common issues encountered while using `fk_markdown.nvim`.
 
-## Run checkhealth
+The troubleshooting and health-check functionality described here is primarily focused on **LaTeX rendering**, which is the feature currently covered by the plugin's diagnostic checks.
 
-```vim
-:checkhealth render-markdown
-```
+## 1. LaTeX Rendering Is Not Working
 
-If there are any `errors` these should be looked at closely, `warnings` can largely
-be ignored. They are generated to help debug issues for less critical components,
-i.e. `latex` support.
+If LaTeX expressions are not rendered correctly, first verify that the required dependencies are installed and available in your environment.
 
-## Validate `filetype`
+### Run the Health Check
 
-This plugin only operates on `markdown` files by default, but can be expanded to
-run on any filetype with `markdown` injected by providing it in the config:
+`fk_markdown.nvim` provides a health check for LaTeX rendering.
 
-```lua
-require('render-markdown').setup({
-    file_types = { 'markdown', <other_filetype> },
-})
-```
-
-Once you confirm the list of `filetypes` you expect this plugin to work on get
-the `filetype` of the current buffer and make sure it is in that list:
+Run the following command inside Neovim:
 
 ```vim
-:lua vim.print(vim.bo.filetype)
+:checkhealth fk_markdown
 ```
 
-## Validate Configuration
+The health check reports problems related to the LaTeX rendering environment and can help identify missing or incorrectly configured dependencies.
 
-This is only a potential issue if you are using a distribution, as opposed to your
-own configuration. The configuration for this plugin could be set by the distribution
-to some default the author prefers. So the settings you think you are using are not
-necessarily the only ones be used.
+Follow the reported recommendations before proceeding with manual troubleshooting.
 
-Run `:RenderMarkdown config`, which will output only the non-default values being
-used, you might be surprised by what you find.
 
-## Validate Parse Tree
 
-Create a new `markdown` file locally with the following content:
+## 2. Verify LaTeX Dependencies
 
-```text
-# Heading
+LaTeX rendering requires the appropriate external tools to be installed and accessible through your system's `PATH`.
 
-- Item
+Verify that the required commands are available from your terminal.
 
-> [!NOTE]
-> A note
+For example:
 
-- [x] Checked
+```bash
+which latex
 ```
 
-Run `:InspectTree` which should output the following:
+or:
 
-```query
-(document ; [0, 0] - [8, 0]
-  (section ; [0, 0] - [8, 0]
-    (atx_heading ; [0, 0] - [1, 0]
-      (atx_h1_marker) ; [0, 0] - [0, 1]
-      heading_content: (inline ; [0, 2] - [0, 9]
-        (inline))) ; [0, 2] - [0, 9]
-    (list ; [2, 0] - [4, 0]
-      (list_item ; [2, 0] - [4, 0]
-        (list_marker_minus) ; [2, 0] - [2, 2]
-        (paragraph ; [2, 2] - [3, 0]
-          (inline ; [2, 2] - [2, 6]
-            (inline)) ; [2, 2] - [2, 6]
-          (block_continuation)))) ; [3, 0] - [3, 0]
-    (block_quote ; [4, 0] - [6, 0]
-      (block_quote_marker) ; [4, 0] - [4, 2]
-      (paragraph ; [4, 2] - [6, 0]
-        (inline ; [4, 2] - [5, 8]
-          (inline ; [4, 2] - [5, 8]
-            (shortcut_link ; [4, 2] - [4, 9]
-              (link_text))) ; [4, 3] - [4, 8]
-          (block_continuation)))) ; [5, 0] - [5, 2]
-    (list ; [7, 0] - [8, 0]
-      (list_item ; [7, 0] - [8, 0]
-        (list_marker_minus) ; [7, 0] - [7, 2]
-        (task_list_marker_checked) ; [7, 2] - [7, 5]
-        (paragraph ; [7, 6] - [8, 0]
-          (inline ; [7, 6] - [7, 13]
-            (inline))))))) ; [7, 6] - [7, 13]
+```bash
+which pdflatex
 ```
 
-If this is not what you see you likely need to update `nvim-treesitter` and your
-treesitter parsers.
+If the command cannot be found, install the required LaTeX distribution and make sure its binary directory is included in your `PATH`.
 
-## Generate Trace Logs
+After modifying your `PATH`, restart Neovim and run the health check again:
 
-If all else fails hopefully the logs can provide some insight. This plugin
-ships with logging, however it only includes errors by default.
-
-To help debug your issue you'll need to go through the following steps:
-
-### 1) Create a Test File
-
-Use the same file from [Validate Parse Tree](#validate-parse-tree).
-
-### 2) Update Log Level
-
-Change plugin configuration to output `trace` logs:
-
-```lua
-require('render-markdown').setup({
-    log_level = 'trace',
-})
+```vim
+:checkhealth fk_markdown
 ```
 
-### 3) Generate Logs
 
-To do this restart Neovim and open the `markdown` file from the first step.
 
-This should trigger the rendering logic, then close Neovim.
+## 3. LaTeX Expression Is Not Rendered
 
-### 4) Provide Logs in Issue
+Make sure the expression uses valid LaTeX syntax and the expected Markdown math delimiters.
 
-Logs can be retrieved by running `:RenderMarkdown log`.
+### Inline Math
 
-Copy the contents and paste them into the issue.
+```markdown
+$E = mc^2$
+```
+
+### Block Math
+
+```markdown
+$$
+E = mc^2
+$$
+```
+
+If valid expressions are still not rendered, run:
+
+```vim
+:checkhealth fk_markdown
+```
+
+and check whether the required LaTeX dependencies are detected.
+
+
+
+## 4. Image Rendering Is Not Working
+
+Image rendering depends on the capabilities of the terminal emulator.
+
+`fk_markdown.nvim` uses terminal graphics capabilities for rendering images. In particular, image rendering requires support for the **Kitty Graphics Protocol**.
+
+If your terminal does not support the required graphics protocol, images may not be displayed.
+
+### Things to Check
+
+1. Verify that your terminal supports the Kitty Graphics Protocol.
+2. Verify that the terminal is configured to allow graphical output.
+3. Check whether you are running Neovim inside a compatible terminal environment.
+4. Test the same Markdown file in a terminal known to support the required graphics protocol.
+
+Image rendering does not currently have the same dedicated health-check coverage as LaTeX rendering.
+
+
+## 5. iTerm2 or Alacritty
+
+If you are using iTerm2, Alacritty, or another terminal emulator without the required Kitty Graphics Protocol support, image rendering may not work as expected.
+
+This is a terminal capability limitation rather than necessarily a problem with the plugin configuration.
+
+In such cases, use a terminal emulator with compatible graphics-protocol support if image rendering is required.
+
+
+
+## 6. Markdown Renders but Looks Incorrect
+
+If Markdown renders successfully but the visual appearance is different from what you expect, check the supported formatting features and the current rendering limitations.
+
+For example, as of `fk_markdown.nvim` v1.4.2, different Markdown heading levels do not have different text sizes.
+
+The following headings may therefore use the same text size:
+
+```markdown
+# Heading 1
+## Heading 2
+### Heading 3
+```
+
+This is a known limitation and is not necessarily a configuration problem.
+
+
+## 7. Health Check Does Not Report an Image Problem
+
+As of `fk_markdown.nvim` v1.4.2, the plugin's health-check functionality is focused on **LaTeX rendering**.
+
+Therefore, an image-rendering problem may not be reported by:
+
+```vim
+:checkhealth fk_markdown
+```
+
+If LaTeX passes the health check but images are not displayed, investigate the terminal's graphics-protocol support instead.
+
+
+
+## 8. General Debugging Checklist
+
+When troubleshooting a rendering issue, check the following:
+
+1. Confirm that you are using a supported version of `fk_markdown.nvim`.
+
+2. Run:
+
+   ```vim
+   :checkhealth fk_markdown
+   ```
+
+
+3. Verify that required external dependencies are installed.
+
+4. Verify that required commands are available in your `PATH`.
+
+5. Confirm that your terminal supports the graphics features required by the content being rendered.
+
+6. Restart Neovim after changing dependencies, environment variables, or terminal configuration.
+
+7. Test with a minimal Markdown document to determine whether the issue is related to the document content or the rendering environment.
+
+
+## 9. Reporting an Issue
+
+If the problem persists after following the troubleshooting steps, provide enough information to reproduce the issue.
+
+When opening an issue, include:
+
+* `fk_markdown.nvim` version.
+
+* Neovim version.
+
+* Operating system.
+
+* Terminal emulator and version.
+
+* Relevant Markdown content.
+
+* Output of:
+
+  ```vim
+  :FkLatexHealth
+  ```
+  
+<img width="1043" height="732" alt="image" src="https://github.com/user-attachments/assets/6bf1a302-c098-4b2d-929a-5baabc8b70f5" />
+
+* A description of the expected behavior.
+
+* A description of the actual behavior.
+
+* Any relevant error messages.
+
+Providing this information makes it easier to identify whether the problem is related to the plugin, an external dependency, or terminal capabilities.
+
+## Version
+
+This troubleshooting guide applies to:
+
+**fk_markdown.nvim v1.4.2**
+
+Troubleshooting procedures and diagnostic support may change in future releases.

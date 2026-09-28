@@ -96,6 +96,10 @@ These are the primary options defined within the `pipe_table` block:
   - `normal`: Removes top and bottom borders (hides top/bottom lines).
   - `none`: Completely disables table rendering.
 
+> **Features**:
+> - **Inline Checkboxes**: Task markers (`[ ]`, `[x]`, `[-]`) inside table cells automatically render as styled checkmark icons in both Neovim and Web Preview!
+> - **Clickable Links**: Press `<CR>` or run `:FkFollowLink` while cursor is on any link inside table cells (`[Group Anagrams](https://leetcode.com/...)`) to open the link directly in your browser.
+
 ---
 
 ## 📝 Configuration Examples

@@ -35,6 +35,10 @@ function M.init()
         require('fk_markdown.latex.health').run()
     end, { desc = 'Show LaTeX rendering health status in a split buffer' })
 
+    vim.api.nvim_create_user_command('FkFollowLink', function()
+        require('fk_markdown.api').follow_link()
+    end, { desc = 'Follow or open the link under cursor' })
+
     vim.api.nvim_create_user_command(name, M.command, {
         nargs = '*',
         desc = plugin .. ' commands',

@@ -154,10 +154,12 @@ function Render:boxy_run()
     -- ── Auto highlight groups (unique per callout accent) ─────────
     local hl_key     = 'FkMdBoxy_' .. accent_hl
     local hl_bg_key  = hl_key .. '_Bg'   -- body rows
+    local hl_bg_only = hl_key .. '_BgOnly'
     local hl_bar_key = hl_key .. '_Bar'  -- ▌ left bar
     local hl_brd_key = hl_key .. '_Brd'  -- ╭──╮ border
 
     vim.api.nvim_set_hl(0, hl_bg_key, { fg = body_fg, bg = user_bg })
+    vim.api.nvim_set_hl(0, hl_bg_only, { bg = user_bg })
     vim.api.nvim_set_hl(0, hl_bar_key, { fg = accent_fg, bg = user_bg, bold = true })
     vim.api.nvim_set_hl(0, hl_brd_key, { fg = accent_fg, bg = user_bg })
 
@@ -168,14 +170,15 @@ function Render:boxy_run()
     local win_width = vim.fn.winwidth(self.context.win)
 
     -- ── 1. Background fill on every real line ─────────────────────
-    -- priority 150 = above treesitter (@markup.quote at ~100) so body
-    -- text gets Normal fg (white) instead of the treesitter accent color
+    -- Priority 10 + combine mode ensures background is applied without
+    -- stripping or overwriting treesitter inline text/code colors.
     for row = start_row, end_row do
         self.marks:add(self.config, 'quote', row, start_col, {
             end_row  = row + 1,
-            hl_group = hl_bg_key,
+            hl_group = hl_bg_only,
+            hl_mode  = 'combine',
             hl_eol   = true,
-            priority = 150,
+            priority = 10,
         })
     end
 

@@ -184,19 +184,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Ar
 }
 
 /* Alert Themes */
-.markdown-alert.markdown-alert-note {
+.markdown-alert.markdown-alert-note,
+.markdown-alert.markdown-alert-info {
     border-left-color: #1f6feb;
     background-color: rgba(31, 111, 235, 0.08);
 }
-.markdown-alert.markdown-alert-note .markdown-alert-title {
+.markdown-alert.markdown-alert-note .markdown-alert-title,
+.markdown-alert.markdown-alert-info .markdown-alert-title {
     color: #58a6ff;
 }
 
-.markdown-alert.markdown-alert-tip {
+.markdown-alert.markdown-alert-tip,
+.markdown-alert.markdown-alert-hint {
     border-left-color: #238636;
     background-color: rgba(35, 134, 54, 0.08);
 }
-.markdown-alert.markdown-alert-tip .markdown-alert-title {
+.markdown-alert.markdown-alert-tip .markdown-alert-title,
+.markdown-alert.markdown-alert-hint .markdown-alert-title {
     color: #3fb950;
 }
 
@@ -208,22 +212,96 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Ar
     color: #a371f7;
 }
 
-.markdown-alert.markdown-alert-warning {
+.markdown-alert.markdown-alert-warning,
+.markdown-alert.markdown-alert-attention {
     border-left-color: #9e6a03;
     background-color: rgba(158, 106, 3, 0.08);
 }
-.markdown-alert.markdown-alert-warning .markdown-alert-title {
+.markdown-alert.markdown-alert-warning .markdown-alert-title,
+.markdown-alert.markdown-alert-attention .markdown-alert-title {
     color: #d29922;
 }
 
 .markdown-alert.markdown-alert-caution,
-.markdown-alert.markdown-alert-danger {
+.markdown-alert.markdown-alert-danger,
+.markdown-alert.markdown-alert-error,
+.markdown-alert.markdown-alert-bug,
+.markdown-alert.markdown-alert-failure,
+.markdown-alert.markdown-alert-fail,
+.markdown-alert.markdown-alert-missing {
     border-left-color: #da3633;
     background-color: rgba(218, 54, 51, 0.08);
 }
 .markdown-alert.markdown-alert-caution .markdown-alert-title,
-.markdown-alert.markdown-alert-danger .markdown-alert-title {
+.markdown-alert.markdown-alert-danger .markdown-alert-title,
+.markdown-alert.markdown-alert-error .markdown-alert-title,
+.markdown-alert.markdown-alert-bug .markdown-alert-title,
+.markdown-alert.markdown-alert-failure .markdown-alert-title,
+.markdown-alert.markdown-alert-fail .markdown-alert-title,
+.markdown-alert.markdown-alert-missing .markdown-alert-title {
     color: #f85149;
+}
+
+.markdown-alert.markdown-alert-success,
+.markdown-alert.markdown-alert-check,
+.markdown-alert.markdown-alert-done {
+    border-left-color: #1f883d;
+    background-color: rgba(31, 136, 61, 0.08);
+}
+.markdown-alert.markdown-alert-success .markdown-alert-title,
+.markdown-alert.markdown-alert-check .markdown-alert-title,
+.markdown-alert.markdown-alert-done .markdown-alert-title {
+    color: #2da44e;
+}
+
+.markdown-alert.markdown-alert-question,
+.markdown-alert.markdown-alert-help,
+.markdown-alert.markdown-alert-faq {
+    border-left-color: #d97706;
+    background-color: rgba(217, 119, 6, 0.08);
+}
+.markdown-alert.markdown-alert-question .markdown-alert-title,
+.markdown-alert.markdown-alert-help .markdown-alert-title,
+.markdown-alert.markdown-alert-faq .markdown-alert-title {
+    color: #f59e0b;
+}
+
+.markdown-alert.markdown-alert-example {
+    border-left-color: #0284c7;
+    background-color: rgba(2, 132, 199, 0.08);
+}
+.markdown-alert.markdown-alert-example .markdown-alert-title {
+    color: #38bdf8;
+}
+
+.markdown-alert.markdown-alert-quote,
+.markdown-alert.markdown-alert-cite {
+    border-left-color: #6e7681;
+    background-color: rgba(110, 118, 129, 0.08);
+}
+.markdown-alert.markdown-alert-quote .markdown-alert-title,
+.markdown-alert.markdown-alert-cite .markdown-alert-title {
+    color: #8b949e;
+}
+
+.markdown-alert.markdown-alert-abstract,
+.markdown-alert.markdown-alert-summary,
+.markdown-alert.markdown-alert-tldr {
+    border-left-color: #0284c7;
+    background-color: rgba(2, 132, 199, 0.08);
+}
+.markdown-alert.markdown-alert-abstract .markdown-alert-title,
+.markdown-alert.markdown-alert-summary .markdown-alert-title,
+.markdown-alert.markdown-alert-tldr .markdown-alert-title {
+    color: #38bdf8;
+}
+
+.markdown-alert.markdown-alert-todo {
+    border-left-color: #6366f1;
+    background-color: rgba(99, 102, 241, 0.08);
+}
+.markdown-alert.markdown-alert-todo .markdown-alert-title {
+    color: #818cf8;
 }
 %s
 </style>
@@ -242,10 +320,17 @@ const plantUmlTheme = %s;
 
 const alertIcons = {
     note: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
+    info: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
     tip: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.099-.115-.2-.23-.306-.35-.615-.718-1.29-1.583-1.29-2.929 0-2.88 2.327-5.25 5.5-5.25s5.5 2.37 5.5 5.25c0 1.346-.675 2.211-1.29 2.929-.106.12-.207.235-.306.35-.18.21-.36.425-.542.68-.207.3-.33.565-.37.847a.75.75 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5Zm1 2.5h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1 0-1.5Z"></path></svg>',
+    hint: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.099-.115-.2-.23-.306-.35-.615-.718-1.29-1.583-1.29-2.929 0-2.88 2.327-5.25 5.5-5.25s5.5 2.37 5.5 5.25c0 1.346-.675 2.211-1.29 2.929-.106.12-.207.235-.306.35-.18.21-.36.425-.542.68-.207.3-.33.565-.37.847a.75.75 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5Zm1 2.5h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1 0-1.5Z"></path></svg>',
     important: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>',
     warning: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.396A1.75 1.75 0 0 1 14.082 15H1.918A1.75 1.75 0 0 1 .375 12.443Zm1.763.94a.25.25 0 0 0-.44 0L1.698 13.383a.25.25 0 0 0 .22.367h12.164a.25.25 0 0 0 .22-.367L8.22 1.987ZM8 5.5a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 8 5.5Zm0 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
-    caution: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>'
+    caution: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
+    danger: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>',
+    success: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path></svg>',
+    question: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm7.25-2.25a.75.75 0 0 1 1.5 0v.5a.75.75 0 0 1-1.5 0v-.5ZM8 9a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"></path></svg>',
+    example: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Z"></path></svg>',
+    quote: '<svg class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M1.75 2.5h10.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Zm0 4h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Zm0 4h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1 0-1.5Z"></path></svg>'
 };
 
 function processAlerts(container) {
@@ -334,8 +419,28 @@ function renderPlantUML(container) {
     });
 }
 
+function processCheckboxes(container) {
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    const nodesToReplace = [];
+    while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (node.nodeValue.includes('[ ]') || node.nodeValue.includes('[x]') || node.nodeValue.includes('[X]') || node.nodeValue.includes('[-]')) {
+            nodesToReplace.push(node);
+        }
+    }
+    nodesToReplace.forEach((node) => {
+        const span = document.createElement('span');
+        span.innerHTML = node.nodeValue
+            .replace(/\[\ \]/g, '<input type="checkbox" disabled class="task-list-item-checkbox">')
+            .replace(/\[[xX]\]/g, '<input type="checkbox" checked disabled class="task-list-item-checkbox">')
+            .replace(/\[\-\]/g, '<input type="checkbox" disabled class="task-list-item-checkbox" style="opacity: 0.6">');
+        node.replaceWith(span);
+    });
+}
+
 function renderMarkdown(text) {
     contentDiv.innerHTML = DOMPurify.sanitize(marked.parse(text));
+    processCheckboxes(contentDiv);
     processAlerts(contentDiv);
     renderPlantUML(contentDiv);
     if (latexEnabled) {

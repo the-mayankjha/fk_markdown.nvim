@@ -20,7 +20,30 @@ function Resolved.new(config)
         end
     end
     self.callouts = Resolved.normalize(config.callout)
-    self.checkboxes = Resolved.normalize(config.checkbox.custom)
+    self.checkboxes = Resolved.normalize(config.checkbox.custom or {})
+
+    -- Register standard unchecked and checked checkboxes
+    if config.checkbox then
+        if config.checkbox.unchecked then
+            self.checkboxes['[ ]'] = {
+                raw = '[ ]',
+                rendered = config.checkbox.unchecked.icon,
+                highlight = config.checkbox.unchecked.highlight,
+                scope_highlight = config.checkbox.unchecked.scope_highlight,
+            }
+        end
+        if config.checkbox.checked then
+            local checked_entry = {
+                raw = '[x]',
+                rendered = config.checkbox.checked.icon,
+                highlight = config.checkbox.checked.highlight,
+                scope_highlight = config.checkbox.checked.scope_highlight,
+            }
+            self.checkboxes['[x]'] = checked_entry
+            self.checkboxes['[x]'] = checked_entry
+        end
+    end
+
     return self
 end
 

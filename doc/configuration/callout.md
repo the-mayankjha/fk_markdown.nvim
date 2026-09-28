@@ -91,8 +91,10 @@ callout = {
 
 ### Standard Callouts Provided by default
 
-- **GitHub themed**: `note` (`󰋽`), `tip` (`󰌶`), `important` (`󰅾`), `warning` (`󰀪`), `caution` (`󰳦`)
-- **Obsidian themed**: `abstract` (`󰨸`), `todo` (`󰗡`), `success` (`󰄬`), `question` (`󰘥`), `bug` (`󰨰`), `example` (`󰉹`), `quote` (`󱆨`), etc.
+- **GitHub themed**: `note` (`󰋽` Blue), `tip` (`󰌶` Green), `important` (`󰅾` Purple), `warning` (`󰀪` Yellow/Amber), `caution` (`󰳦` Red)
+- **Obsidian themed**: `abstract` (`󰨸` Cyan), `todo` (`󰗡` Indigo), `success` (`󰄬` Emerald Green), `question` (`󰘥` Gold/Yellow), `bug` (`󰨰` Crimson), `example` (`󰉹` Cyan/Teal), `quote` (`󱆨` Slate Gray), `danger` (`󱐌` Rose/Red), `info` (`󰋽` Blue), `hint` (`󰌶` Green).
+
+> **Note**: All callouts are styled with distinct, vibrant colors in both **Neovim** (in-buffer rendering) and **Live Web Preview**. Background fills use subtle tint combinations (`hl_mode = 'combine'`) so inline formatting (code blocks, bold, italic, links, checkboxes) retains full text syntax color over the callout background.
 
 ---
 
@@ -111,7 +113,7 @@ require('fk_markdown').setup({
 })
 ```
 
-### Full Notion-Style Highlighted Blockquotes
+### Customizing Callout Icons & Highlights
 ```lua
 require('fk_markdown').setup({
     quote = {
@@ -127,6 +129,11 @@ require('fk_markdown').setup({
             raw = '[!WARNING]', 
             rendered = '⚠️ CRITICAL ALERT', 
             highlight = 'RenderMarkdownError' 
+        },
+        custom = {
+            raw = '[!NOTE]',
+            rendered = '📌 Note',
+            highlight = 'RenderMarkdownInfo',
         }
     }
 })
